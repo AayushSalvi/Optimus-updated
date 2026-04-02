@@ -73,7 +73,7 @@ nohup.out
 .env
 .env.local
 local_config.py
-=======
+
 # Python
 __pycache__/
 *.py[cod]
@@ -126,4 +126,4 @@ plan/
 # Misc
 *.docx
 agentic_skill_templates.json
->>>>>>> 95e5309 (Remove plan/ and reflection/ from tracking)
+95e5309 (Remove plan/ and reflection/ from tracking)

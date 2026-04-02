@@ -1,3 +1,4 @@
+
 # Python-generated files
 __pycache__/
 *.py[oc]
@@ -72,3 +73,57 @@ nohup.out
 .env
 .env.local
 local_config.py
+=======
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.cursor/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data files (large, download separately)
+minedojo_data/
+JARVIS-1/
+reflection/
+plan/
+# Memory bank intermediate files
+#memory_bank/outputs/memory_bank_v1.json
+#memory_bank/outputs/memory_bank_v2.json
+
+# PDFs and papers (not code)
+*.pdf
+
+# Test scripts
+# unified_agent_game/
+# mine_dojo_test.py
+# minecraft_data_test.py
+# directory.py
+# grap_options.txt
+# plan_success_files.txt
+# temp_structure_jarvis+optimus.pdf
+
+# Misc
+*.docx
+agentic_skill_templates.json
+>>>>>>> 95e5309 (Remove plan/ and reflection/ from tracking)

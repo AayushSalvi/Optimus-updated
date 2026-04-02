@@ -1,0 +1,12 @@
+Option 1: Hardcoded in Python (what we did)
+We manually typed every recipe and item property into the code. It works but doesn't scale. If Minecraft updates or we need new items, someone edits Python code.
+Option 2: Extract from Minecraft's own game files
+Minecraft Java Edition ships with all recipes as JSON files inside the game's .jar file. Every single recipe in the game is in data/minecraft/recipes/. These are the ground truth — verified by the game itself. We could write a script to extract and parse these. This is the cleanest source but requires accessing the Minecraft game files.
+Option 3: Extract from MineDojo Wiki dataset
+MineDojo has ~7000 wiki pages. We'd need to find the pages for each item, parse the HTML tables for crafting recipes, Y-levels, tool requirements, etc. Messy because wiki data is unstructured — text mixed with images and tables with inconsistent formatting. The data.json you shared showed how messy it is.
+Option 4: Use an existing structured Minecraft data API
+There are community-maintained structured databases of Minecraft data — like minecraft-data (an npm/Python package) or PrismarineJS's data files. These have every item, recipe, block, mob, and biome in clean JSON format, maintained by the community and kept up to date with game versions. This is probably the cleanest and most scalable approach.
+Option 5: LLM-generated then human-verified
+Use GPT-4 or Claude to generate all recipes and item data, then manually verify. Fast but risky — LLMs can hallucinate wrong recipes.
+Option 6: Separate JSON data files (what the graph currently does)
+The recipes and items are still hardcoded as Python defaults, but they get exported to recipes.json and items.json on first run. After that, you edit the JSON files. This is a middle ground — hardcoded once, then maintained as data files.

@@ -1,0 +1,82 @@
+{
+  "plan": [
+    {
+      "id": "iE5vPmaYnT7cV2juFR9kqo",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "chest",
+      "video": "videos/v1/Craft_a_chest/success/57d70_2026_04_22_01_42_53.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            12
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1976
+    },
+    {
+      "id": "J459PUDewv7NT7tZaC5jRo",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "chest",
+      "video": "videos/v1/Craft_a_chest/success/e89fb_2026_04_25_18_16_07.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            12
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1707
+    }
+  ]
+}

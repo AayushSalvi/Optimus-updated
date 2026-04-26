@@ -1,0 +1,132 @@
+{
+  "plan": [
+    {
+      "id": "dFZbvRkWUcGu3vUnc4qWGY",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "stick",
+      "video": "videos/v1/Craft_a_stick/success/eb059_2026_04_18_01_34_21.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 477
+    },
+    {
+      "id": "bLLWcoHn5aKq8STiTn9ML6",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "stick",
+      "video": "videos/v1/Craft_a_stick/success/68d06_2026_04_22_01_34_16.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 424
+    },
+    {
+      "id": "Ln3echkw3pfPeFAcq2LStC",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "stick",
+      "video": "videos/v1/Craft_a_stick/success/83f35_2026_04_23_23_01_01.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1388
+    },
+    {
+      "id": "NqYnxbTxRYDPAWNwDUHHS7",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "stick",
+      "video": "videos/v1/Craft_a_stick/success/45546_2026_04_25_18_04_33.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 434
+    }
+  ]
+}

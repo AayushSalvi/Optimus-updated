@@ -13,6 +13,22 @@ from ..util.thread import MultiThreadServerAPI
 
 from .graph import KnowledgeGraph
 
+# === OUR MEMORY BANK ===
+import os as _os
+_MB_PATH = _os.path.join(_os.path.dirname(__file__), "v1", "memory_bank_v3.json")
+_KG_DATA_PATH = _os.path.join(_os.path.dirname(__file__), "kg_data")
+try:
+    from .our_graph import MinecraftKnowledgeGraph as OurGraph
+    _OUR_GRAPH = OurGraph(_KG_DATA_PATH) if _os.path.exists(_KG_DATA_PATH) else None
+except Exception:
+    _OUR_GRAPH = None
+try:
+    with open(_MB_PATH, 'r') as _f:
+        _MEMORY_BANK = json.load(_f)
+except Exception:
+    _MEMORY_BANK = None
+# === END OUR MEMORY BANK ===
+
 REPLAN_EXAMPLE_FORMAT = """
 <task>: {}
 <error>: {}
@@ -242,9 +258,60 @@ class Memory:
                 json.dump(memory, fp, indent=2)
 
     def retrieve_plan(self, task: str):
+        task_key = task.replace(" ", "_").lower()
+        has_done = False
+        if _MEMORY_BANK is not None:
+            mb_entry = _MEMORY_BANK.get(task_key)
+            if mb_entry is None:
+                for prefix in ["craft_a_", "craft_an_", "craft_", "smelt_a_", "smelt_", "mine_", "chop_a_", "chop_", "dig_down_to_mine_"]:
+                    if task_key.startswith(prefix):
+                        candidate = task_key[len(prefix):]
+                        if candidate in _MEMORY_BANK:
+                            mb_entry = _MEMORY_BANK[candidate]
+                            task_key = candidate
+                            break
+            if mb_entry is None:
+                best = process.extractOne(task_key, list(_MEMORY_BANK.keys()))
+                if best and best[1] > 60:
+                    mb_entry = _MEMORY_BANK[best[0]]
+                    task_key = best[0]
+            if mb_entry and mb_entry.get("plans"):
+                has_done = True
+                plan_data = mb_entry["plans"][0]
+                plan = plan_data["steps"]
+                render_plan = {}
+                for idx, p in enumerate(plan):
+                    goal_item = p.get("text", "")
+                    goal_dict = p.get("goal", {})
+                    goal_qty = list(goal_dict.values())[0] if goal_dict else 1
+                    render_plan[f"step {idx+1}"] = {"task": f"{p['type']} {goal_item}", "goal": [goal_item, goal_qty]}
+                goal = plan[-1].get("text", task_key)
+                graph = self.retrieve_graph(goal)
+                examples = PLAN_EXAMPLE_FORMAT.format(task_key.replace("_", " "), "None", graph, json.dumps(render_plan))
+                print(f"[OUR MEMORY] Found plan for: {task_key} ({len(plan)} steps)")
+                return examples, has_done
         task = task.replace(" ", "_").lower()
         has_done = False
-
+        def get_best_match_recipe(target, choices):
+            res = process.extractOne(target, choices)
+            return res[0]
+        try:
+            lst_dir = os.listdir(f"src/optimus1/memories/{self.version}/plan/success")
+        except FileNotFoundError:
+            return None, False
+        target = get_best_match_recipe(task + ".json", lst_dir)
+        has_done = task + ".json" == target
+        print(f"[ORIGINAL] Find example: {target}")
+        with open(os.path.join(f"src/optimus1/memories/{self.version}/plan/success", target), "r") as fi:
+            data = json.load(fi)
+        plan = data["plan"][0]["planning"]
+        render_plan = {}
+        for idx, p in enumerate(plan):
+            render_plan[f"step {idx+1}"] = p
+        goal = (plan[-1]["goal"][0] if "goal" not in data["plan"][0] else data["plan"][0]["goal"])
+        visual_info = data["plan"][0].get("visual_info", "None")
+        examples = PLAN_EXAMPLE_FORMAT.format(target.replace(".json", "").replace("_", " "), visual_info, self.retrieve_graph(goal), json.dumps(render_plan))
+        return examples, has_done
         def get_best_match_recipe(target: str, choices):
             res = process.extractOne(target, choices)
             return res[0]
@@ -342,14 +409,28 @@ class Memory:
         return "\n".join(examples).strip()
 
     def retrieve_graph(self, item: str, number: int = 1) -> str:
-        if (
-            item == "iron_ore"
-            or item == "logs"
-            or item == "cobblestone"
-            or item == "redstone"
-            or item == "sand"
-            or item == "coal_ore"
-        ):
-            return "Just mine it!"
-        item = item.replace("logs", "log")
-        return self.crafting_graph.compile(item.replace(" ", "_"), number)
+        # Raw materials - no crafting needed
+        raw_items = {"iron_ore", "logs", "cobblestone", "redstone", "sand", "coal_ore",
+                     "diamond", "gold_ore", "log", "oak_log", "birch_log", "jungle_log",
+                     "acacia_log", "white_wool", "wool", "leather", "string", "chicken",
+                     "beef", "porkchop", "mutton", "apple", "sugar_cane"}
+        if item in raw_items:
+            return "Just mine/collect it!"
+
+        # === TRY OUR GRAPH FIRST ===
+        if _OUR_GRAPH is not None:
+            try:
+                result = _OUR_GRAPH.compile_for_planner(item.replace(" ", "_"), number)
+                if result:
+                    print(f"[OUR GRAPH] {item}")
+                    return result
+            except Exception as e:
+                print(f"[OUR GRAPH] Error for {item}: {e}")
+        # === END OUR GRAPH ===
+
+        # Fallback to original graph
+        try:
+            item = item.replace("logs", "log")
+            return self.crafting_graph.compile(item.replace(" ", "_"), number)
+        except Exception as e:
+            return f"craft {number} {item}: recipe not found"

@@ -1,0 +1,76 @@
+{
+  "plan": [
+    {
+      "id": "d5bpK4ZM5XgbC8QxzJnBzh",
+      "environment": "beach",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: beach",
+      "goal": "dirt",
+      "video": "videos/v1/dig_down_to_mine_dirt/success/0c231_2026_04_18_01_36_27.mp4",
+      "planning": [
+        {
+          "task": "dig down to mine dirt",
+          "goal": [
+            "dirt",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 54
+    },
+    {
+      "id": "4HubfjnajN2d4PVAyqXMjk",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "dirt",
+      "video": "videos/v1/dig_down_to_mine_dirt/success/c88f3_2026_04_22_01_51_59.mp4",
+      "planning": [
+        {
+          "task": "dig down to mine dirt",
+          "goal": [
+            "dirt",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 42
+    },
+    {
+      "id": "5Hywac74WDNVvo7FM9MFuT",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "dirt",
+      "video": "videos/v1/dig_down_to_mine_dirt/success/2e03c_2026_04_23_23_27_22.mp4",
+      "planning": [
+        {
+          "task": "dig down to mine dirt",
+          "goal": [
+            "dirt",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 282
+    },
+    {
+      "id": "g9GLLKRpo4KCnHze8UQSJf",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "dirt",
+      "video": "videos/v1/dig_down_to_mine_dirt/success/4793c_2026_04_25_18_24_03.mp4",
+      "planning": [
+        {
+          "task": "dig down to mine dirt",
+          "goal": [
+            "dirt",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 35
+    }
+  ]
+}

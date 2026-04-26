@@ -1,0 +1,164 @@
+{
+  "plan": [
+    {
+      "id": "4QrfZ5rTJKSCRPh58PKrpE",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "crafting table",
+      "video": "videos/v1/Craft_a_crafting_table/success/ede06_2026_04_17_21_08_31.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 955
+    },
+    {
+      "id": "F3Exw8Rjre2EGrFLzC88WL",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "crafting table",
+      "video": "videos/v1/Craft_a_crafting_table/success/0b194_2026_04_22_01_35_29.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 295
+    },
+    {
+      "id": "oCiK3TEfdvsCqyA6EcSLzy",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "crafting table",
+      "video": "videos/v1/Craft_a_crafting_table/success/be442_2026_04_23_23_03_04.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 712
+    },
+    {
+      "id": "Xmbka9gt9gyxWSQapNVsUm",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "crafting table",
+      "video": "videos/v1/Craft_a_crafting_table/success/1cb78_2026_04_23_23_35_28.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 411
+    },
+    {
+      "id": "UR74vcAwYquXpoHjXRK2HA",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "crafting table",
+      "video": "videos/v1/Craft_a_crafting_table/success/383f5_2026_04_25_18_07_47.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1591
+    }
+  ]
+}

@@ -120,8 +120,7 @@ class CustomEnvWrapper(gym.Wrapper):
 
         obs = self.env.reset()
         if commands:
-            for cmd in commands:
-                self.env.execute_cmd(cmd)
+            pass  # Commands disabled - causes minerl crash
         return obs
 
     def raw_step(self, action: Dict[str, Any]):

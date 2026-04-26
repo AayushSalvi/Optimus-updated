@@ -344,7 +344,7 @@ class KnowledgeGraph:
         order = self._topo_sort(sub_graph, in_degree)
 
         res = [
-            f"{idx+1}. {item.lower()}: need {summary[item] if summary[item] > 0 else '??'}"
+            f"{idx+1}. {item.lower()}: need {summary.get(item, '??') if summary.get(item, 0) > 0 else '??'}"
             for idx, item in enumerate(order)
         ]
         return "\n".join(res)

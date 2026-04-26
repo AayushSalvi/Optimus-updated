@@ -472,9 +472,9 @@ class Text(MineRLSpace):
         total_strings = np.prod(self.shape)
         strings = [
             "".join([random.choice(string.ascii_lowercase) for _ in range(random.randint(0, Text.MAX_STR_LEN))])
-            for _ in range(total_strings)
+            for _ in range(int(total_strings))
         ]
-        return np.array(np.reshape(strings, self.shape), np.dtype)
+        return np.array(np.reshape(strings, self.shape))
 
     def contains(self, x):
         contained = False  # ? TODO (R): Look back in git.

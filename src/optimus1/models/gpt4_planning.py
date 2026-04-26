@@ -6,7 +6,7 @@ import openai
 from .base_model import BasePlanningModel, BaseReflectionModel
 
 client = openai.OpenAI(
-    api_key="<your api key>",
+    api_key="not-needed", base_url="http://localhost:8000/v1",
     timeout=2000,
     max_retries=3,
 )
@@ -152,7 +152,7 @@ class PlanningModel(BasePlanningModel, BaseReflectionModel):
                     ],
                 },
             ],
-            model="gpt-4o",
+            model="Qwen/Qwen3-VL-8B-Instruct",
             max_tokens=2000,
         )
         return response.choices[0].message.content
@@ -189,7 +189,7 @@ class PlanningModel(BasePlanningModel, BaseReflectionModel):
                     ],
                 },
             ],
-            model="gpt-4o",
+            model="Qwen/Qwen3-VL-8B-Instruct",
             max_tokens=2000,
         )
         return response.choices[0].message.content
@@ -252,7 +252,7 @@ class PlanningModel(BasePlanningModel, BaseReflectionModel):
                     ],
                 }
             ],
-            model="gpt-4o",
+            model="Qwen/Qwen3-VL-8B-Instruct",
             max_tokens=2000,
         )
         return response.choices[0].message.content
@@ -371,7 +371,7 @@ class PlanningModel(BasePlanningModel, BaseReflectionModel):
                     "content": content,
                 }
             ],
-            model="gpt-4o",
+            model="Qwen/Qwen3-VL-8B-Instruct",
             max_tokens=2000,
         )
         return result.choices[0].message.content

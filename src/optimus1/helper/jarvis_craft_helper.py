@@ -459,6 +459,15 @@ class CraftHelper:
         return result
 
     # crafting
+    def _count_in_inventory(self, target):
+        """Count total quantity of `target` item across all inventory slots."""
+        total = 0
+        inv = self.info.get("plain_inventory", {})
+        for slot_id, slot in inv.items():
+            if isinstance(slot, dict) and slot.get("type") == target:
+                total += slot.get("quantity", 0)
+        return total
+
     def crafting(self, target: str, target_num: int = 1):
         try:
             # is item/tag
@@ -522,6 +531,9 @@ class CraftHelper:
                         iter_num = target_num
 
                     enough_material_subtarget = True
+                    if subtarget == "birch_planks":
+                        _labels = self.get_labels()
+                        _inv = {k:v for k,v in _labels.items() if v.get("type","air") != "air"} if isinstance(list(_labels.values())[0], dict) else _labels
                     for item, num_need in items.items():
                         labels = self.get_labels()
                         inventory_id = self.find_in_inventory(
@@ -530,7 +542,9 @@ class CraftHelper:
                         if not inventory_id:
                             enough_material_subtarget = False
                             break
-                        inventory_num = labels.get(inventory_id).get("quantity")
+                        if isinstance(inventory_id, list):
+                            inventory_id = inventory_id[0]
+                        inventory_num = labels.get(inventory_id, {}).get("quantity", 0)
                         if num_need * iter_num > inventory_num:
                             enough_material_subtarget = False
                             break
@@ -567,6 +581,8 @@ class CraftHelper:
 
             need_table = self.crafting_type(recipe_info)
 
+            # Cache inventory before opening GUI (inventory becomes unreadable during GUI)
+            self._cached_labels = self.get_labels()
             if need_table:
                 self.open_crating_table_wo_recipe()
             else:
@@ -651,42 +667,33 @@ class CraftHelper:
     def find_in_inventory(
         self, labels: Dict, item: str, item_type: str = "item", path=None
     ):
-        if path == None:
-            path = []
-        for key, value in labels.items():
-            current_path = path + [key]
-            if item_type == "item":
-                if re.match(item, str(value)):
-                    return current_path
-                elif isinstance(value, dict):
-                    result = self.find_in_inventory(
-                        value, item, item_type, current_path
-                    )
-                    if result is not None:
-                        return result[0]
-            elif item_type == "tag":
-                # tag info
-                relative_path = os.path.join("tag_items.json")
-                tag_json_path = os.path.join(self.root_path, relative_path)
-                with open(tag_json_path) as file:
-                    self.tag_info = json.load(file)
-
-                item_list = self.tag_info["minecraft:" + item]
-                for i in range(len(item_list)):
-                    if re.match(item_list[i][10:], str(value)):
-                        return current_path
-                    elif isinstance(value, dict):
-                        result = self.find_in_inventory(
-                            value, item, item_type, current_path
-                        )
-                        if result is not None:
-                            return result[0]
+        """Find a slot in the flat labels dict containing the given item or any item in the given tag.
+        Returns the slot key (e.g. 'inventory_0') or None.
+        """
+        if item_type == "item":
+            for key, value in labels.items():
+                if re.search(item, str(value)):
+                    return key
+            return None
+        elif item_type == "tag":
+            relative_path = os.path.join("tag_items.json")
+            tag_json_path = os.path.join(self.root_path, relative_path)
+            with open(tag_json_path) as file:
+                self.tag_info = json.load(file)
+            item_list = self.tag_info["minecraft:" + item]
+            # Try each variant in the tag against each slot
+            for key, value in labels.items():
+                for variant in item_list:
+                    variant_name = variant[10:]  # strip "minecraft:"
+                    if re.search(variant_name, str(value)):
+                        return key
+            return None
         return None
-
     # crafting once
     def crafting_once(
         self, target: str, iter_num: int, recipe_info: Dict, target_num: int
     ):
+        self._pre_craft_count = self._count_in_inventory(target)
         # shaped crafting
         if "pattern" in recipe_info:
             self.crafting_shaped(target, iter_num, recipe_info)
@@ -716,8 +723,7 @@ class CraftHelper:
                     self._assert(result_inventory_id_2, f"no space to place result")
                     self.pull_item_return(self.crafting_slotpos, result_inventory_id_2)
                     self._assert(
-                        self.get_labels().get(result_inventory_id_2).get("type")
-                        == target,
+                        self._count_in_inventory(target) >= self._pre_craft_count + target_num,
                         f"fail for unkown reason",
                     )
             else:
@@ -727,7 +733,7 @@ class CraftHelper:
                     self.crafting_slotpos, "result_0", result_inventory_id_2, iter_num
                 )
                 self._assert(
-                    self.get_labels().get(result_inventory_id_2).get("type") == target,
+                    self._count_in_inventory(target) >= self._pre_craft_count + target_num,
                     f"fail for unkown reason",
                 )
         else:
@@ -737,7 +743,7 @@ class CraftHelper:
                 self.crafting_slotpos, "result_0", result_inventory_id_2, iter_num
             )
             self._assert(
-                self.get_labels().get(result_inventory_id_2).get("type") == target,
+                self._count_in_inventory(target) >= self._pre_craft_count + target_num,
                 f"fail for unkown reason",
             )
 
@@ -773,6 +779,7 @@ class CraftHelper:
             num_need = num_need * iter_num
             inventory_id = self.find_in_inventory(labels, item, item_type)
             self._assert(inventory_id, MISSING_MATERIAL_FORMAT.format(item, num_need))
+            import sys; print(f"[DEBUG SHAPED] item={item}, type={item_type}, inventory_id={inventory_id!r}, labels.get(id)={labels.get(inventory_id)!r}, label_keys={list(labels.keys())[:10]}", file=sys.stderr, flush=True)
             inventory_num = labels.get(inventory_id).get("quantity")
             self._assert(
                 num_need <= inventory_num,
@@ -842,6 +849,7 @@ class CraftHelper:
             self._assert(
                 inventory_id, MISSING_MATERIAL_FORMAT.format(item, num_need * iter_num)
             )
+            import sys; print(f"[DEBUG SHAPED] item={item}, type={item_type}, inventory_id={inventory_id!r}, labels.get(id)={labels.get(inventory_id)!r}, label_keys={list(labels.keys())[:10]}", file=sys.stderr, flush=True)
             inventory_num = labels.get(inventory_id).get("quantity")
             self._assert(
                 num_need * iter_num <= inventory_num,

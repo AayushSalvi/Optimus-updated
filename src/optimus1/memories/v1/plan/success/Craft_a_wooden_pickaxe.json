@@ -1,0 +1,50 @@
+{
+  "plan": [
+    {
+      "id": "SA4niRsoE79RW9CNBeawPo",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "wooden pickaxe",
+      "video": "videos/v1/Craft_a_wooden_pickaxe/success/20860_2026_04_25_18_00_20.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            9
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 893
+    }
+  ]
+}

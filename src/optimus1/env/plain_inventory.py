@@ -34,12 +34,15 @@ class PlainInventoryObservation(TranslationHandler):
         assert "inventory" in obs_dict, "Missing inventory key in malmo json"
         # print(obs_dict.keys())
         # print(obs_dict["inventory"]·)
-        inventory = dict()
-        for item in obs_dict["inventory"]:
-            # print(item)
-            inventory[item["slot_id"]] = {
-                "type": item["type"],
-                "quantity": item["quantity"],
+        inventory = {slot: {"type": "none", "quantity": 0} for slot in range(self.n_slots)}
+        for idx, item in enumerate(obs_dict["inventory"]):
+            slot = item.get("slot_id", idx)
+            item_type = item.get("type", "air")
+            if item_type == "air":
+                item_type = "none"
+            inventory[slot] = {
+                "type": item_type,
+                "quantity": item.get("quantity", 0),
             }
 
         return inventory

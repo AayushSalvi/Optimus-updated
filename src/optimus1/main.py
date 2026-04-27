@@ -63,6 +63,24 @@ def get_info_from_plan(data):
     return goal, visual_info, env
 
 
+
+# === Progress Ledger imports ===
+from optimus1.progress_ledger import (
+    init_ledger as _ledger_init,
+    detect_key_nodes as _ledger_detect,
+    compute_world_delta as _ledger_compute_delta,
+    StepRecord as _LedgerStepRecord,
+    make_call_llm as _ledger_make_call_llm,
+)
+_LEDGER_CALL_LLM = None
+def _ledger_get_call_llm():
+    global _LEDGER_CALL_LLM
+    if _LEDGER_CALL_LLM is None:
+        _LEDGER_CALL_LLM = _ledger_make_call_llm()
+    return _LEDGER_CALL_LLM
+# === End Progress Ledger imports ===
+
+
 def agent_do(
     cfg: DictConfig,
     env: CustomEnvWrapper,
@@ -71,6 +89,7 @@ def agent_do(
     planning: PlanList,
     reset_obs: Dict[str, Any],
     memory_bank: Memory,
+    ledger=None,
 ):
     helper = Helper(env)
     obs = reset_obs
@@ -93,6 +112,10 @@ def agent_do(
         current_plan = plan_manager.next_plan
 
         while current_plan is not None:
+            # [LEDGER] snapshot inventory + position before this sub-task
+            _ledger_pre_inv = dict(env.status_mod.inventory) if (ledger is not None and hasattr(env, "status_mod")) else {}
+            _ledger_pre_loc = dict(env.status_mod.location_stats) if (ledger is not None and hasattr(env, "status_mod")) else {}
+            _ledger_pre_equip = env.status_mod.equipment if (ledger is not None and hasattr(env, "status_mod")) else "none"
             task, goal = current_plan["task"], current_plan["goal"]
             if goal[0] == "log":
                 goal[0] = "logs"
@@ -126,6 +149,39 @@ def agent_do(
                     logger.info(f"[green]{task} Success[/green]!")
                     progress += 1
                     pbar.update(all_task, advance=1)
+                    # [LEDGER] update on craft/smelt/equip success
+                    if ledger is not None:
+                        try:
+                            _post_inv = dict(env.status_mod.inventory)
+                            _post_loc = dict(env.status_mod.location_stats)
+                            _post_equip = env.status_mod.equipment
+                            _delta = _ledger_compute_delta(
+                                inv_before=_ledger_pre_inv,
+                                inv_after=_post_inv,
+                                loc_before=_ledger_pre_loc,
+                                loc_after=_post_loc,
+                                equipped_before=_ledger_pre_equip,
+                                equipped_after=_post_equip,
+                            )
+                            _states = {o.id: ledger.outcome_cache.get_state(o.id) for o in ledger.required_outcomes}
+                            _kns = _ledger_detect(
+                                step_idx=env.num_steps,
+                                required_outcomes=ledger.required_outcomes,
+                                current_outcome_states=_states,
+                                world_delta=_delta,
+                                actor_action_summary=f"completed sub-task: {task}",
+                                call_llm=_ledger_get_call_llm(),
+                            )
+                            _step_rec = _LedgerStepRecord(
+                                step_idx=env.num_steps,
+                                inventory=_post_inv,
+                                actor_action_summary=f"completed sub-task: {task}",
+                                key_nodes=_kns,
+                            )
+                            ledger.apply_step_keynodes(_step_rec)
+                            logger.info(f"[cyan][LEDGER] After {task!r}: pending={ledger.pending()}, all_done={ledger.all_done()}[/cyan]")
+                        except Exception as _e:
+                            logger.warning(f"[LEDGER] update failed: {_e}")
 
                 else:
                     assert (
@@ -151,6 +207,12 @@ def agent_do(
                         cg.append(memory_bank.retrieve_graph(item, num))
                     graph_summary = "\n".join(cg)
                     logger.info(f"Craft Graph: {graph_summary}")
+                    # [LEDGER] inject working-memory state into replan prompt
+                    if ledger is not None:
+                        try:
+                            graph_summary = (graph_summary or "") + "\n\n" + ledger.to_prompt_block()
+                        except Exception as _e:
+                            logger.warning(f"[LEDGER] inject into replan failed: {_e}")
                     replan = ServerAPI.get_plan(
                         cfg["server"], obs, task, info, examples, graph_summary
                     )
@@ -296,6 +358,33 @@ def main(cfg: DictConfig):
             obs = env.reset()
             t.join()
 
+
+            # [LEDGER] initialize per-episode progress ledger
+            ledger = None
+            try:
+                _init_inv = dict(env.status_mod.inventory) if hasattr(env, "status_mod") else {}
+                _init_loc = env.status_mod.location_stats if hasattr(env, "status_mod") else {}
+                def _xyz(loc):
+                    if not loc:
+                        return (0.0, 64.0, 0.0)
+                    def _v(k):
+                        v = loc.get(k, 0.0)
+                        return float(v.item() if hasattr(v, "item") else v)
+                    return (_v("xpos"), _v("ypos"), _v("zpos"))
+                _init_pos = _xyz(_init_loc)
+                _init_equip = env.status_mod.equipment if hasattr(env, "status_mod") else "none"
+                ledger = _ledger_init(
+                    instruction=task,
+                    initial_inventory=_init_inv,
+                    initial_position=_init_pos,
+                    initial_dimension="overworld",
+                    initial_equipped=_init_equip,
+                    call_llm=_ledger_get_call_llm(),
+                )
+                logger.info(f"[cyan][LEDGER] Initialized for task={task!r}: outcomes={[o.id for o in ledger.required_outcomes]}[/cyan]")
+            except Exception as _e:
+                logger.warning(f"[LEDGER] init failed: {_e}")
+                ledger = None
             while True:
                 try:
                     retrieval_info = ServerAPI.get_retrieval(cfg["server"], obs, task)
@@ -315,8 +404,15 @@ def main(cfg: DictConfig):
                     logger.info(f"Graph: {graph}")
 
                     if not has_done:
+                        # [LEDGER] inject ledger block into initial planner's graph context
+                        _graph_with_ledger = graph
+                        if ledger is not None:
+                            try:
+                                _graph_with_ledger = (graph or "") + "\n\n" + ledger.to_prompt_block()
+                            except Exception as _e:
+                                logger.warning(f"[LEDGER] inject into initial plan failed: {_e}")
                         planning = ServerAPI.get_plan(
-                            cfg["server"], obs, task, None, example, graph, visual_info
+                            cfg["server"], obs, task, None, example, _graph_with_ledger, visual_info
                         )
                     else:
                         planning = example
@@ -335,7 +431,7 @@ def main(cfg: DictConfig):
             current_monitos = Monitors([SuccessMonitor(), StepMonitor()])
             # try:
             status, steps, current_planning = agent_do(
-                cfg, env, logger, current_monitos, planning, obs, memory_bank
+                cfg, env, logger, current_monitos, planning, obs, memory_bank, ledger=ledger
             )
             video_file = env.save_video(task, status)
             # * save planning

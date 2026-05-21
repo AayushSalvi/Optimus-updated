@@ -460,10 +460,28 @@ class CraftHelper:
 
     # crafting
     def _count_in_inventory(self, target):
-        """Count total quantity of `target` item across all inventory slots."""
+        """Count total quantity of `target` across inventory AND resource grid slots.
+
+        Two changes from earlier version:
+          1. Forces a fresh env observation via _null_action(1) before reading,
+             so we don't see stale self.info from before the last pull operation.
+          2. Counts items still in the crafting grid (resource_0..resource_8) in
+             addition to plain_inventory. Items can be mid-transit during the
+             post-craft assertion window — counting both prevents false failures.
+        """
+        # Refresh observation so plain_inventory reflects post-craft state
+        try:
+            self._null_action(1)
+        except Exception:
+            pass
         total = 0
         inv = self.info.get("plain_inventory", {})
         for slot_id, slot in inv.items():
+            if isinstance(slot, dict) and slot.get("type") == target:
+                total += slot.get("quantity", 0)
+        # Also count items still sitting in resource_X grid slots
+        rec = getattr(self, "resource_record", {}) or {}
+        for slot_id, slot in rec.items():
             if isinstance(slot, dict) and slot.get("type") == target:
                 total += slot.get("quantity", 0)
         return total
@@ -503,25 +521,42 @@ class CraftHelper:
                             recipe_info = json.load(file)
                     need_table = self.crafting_type(recipe_info)
 
-                    # find materials(shapeless) like oak_planks
-                    ingredients = recipe_info.get("ingredients")
-                    random.shuffle(ingredients)
+                    # find materials — support shapeless (`ingredients`) and shaped (`pattern`+`key`) recipes
                     items = dict()
                     items_type = dict()
-
-                    # clculate the amount needed and store <item, quantity> in items
-                    for i in range(len(ingredients)):
-                        if ingredients[i].get("item"):
-                            item = ingredients[i].get("item")[10:]
-                            item_type = "item"
-                        else:
-                            item = ingredients[i].get("tag")[10:]
-                            item_type = "tag"
-                        items_type[item] = item_type
-                        if items.get(item):
-                            items[item] += 1
-                        else:
-                            items[item] = 1
+                    ingredients = recipe_info.get("ingredients")
+                    if ingredients is not None:
+                        # shapeless: list of {item|tag: ...}
+                        random.shuffle(ingredients)
+                        for ing in ingredients:
+                            if ing.get("item"):
+                                item = ing.get("item")[10:]
+                                item_type = "item"
+                            else:
+                                item = ing.get("tag")[10:]
+                                item_type = "tag"
+                            items_type[item] = item_type
+                            items[item] = items.get(item, 0) + 1
+                    else:
+                        # shaped: pattern is list of strings, key maps char -> {item|tag}
+                        pattern_rows = recipe_info.get("pattern", [])
+                        key = recipe_info.get("key", {})
+                        char_counts = {}
+                        for row in pattern_rows:
+                            for ch in row:
+                                if ch == " " or ch not in key:
+                                    continue
+                                char_counts[ch] = char_counts.get(ch, 0) + 1
+                        for ch, count in char_counts.items():
+                            spec = key[ch]
+                            if spec.get("item"):
+                                item = spec.get("item")[10:]
+                                item_type = "item"
+                            else:
+                                item = spec.get("tag")[10:]
+                                item_type = "tag"
+                            items_type[item] = item_type
+                            items[item] = items.get(item, 0) + count
 
                     if recipe_info.get("result").get("count"):
                         iter_num = math.ceil(
@@ -758,7 +793,20 @@ class CraftHelper:
         labels = self.get_labels()
         pattern = recipe_info.get("pattern")
         items = recipe_info.get("key")
-        items = random_dic(items)
+        # [BUG 2 FIX] Place item-typed ingredients (sticks, ingots) before
+        # tag-typed ingredients (planks). Tag-typed primary materials like
+        # planks accidentally match partial recipes (oak_button, slabs) when
+        # placed alone, causing the wrong item to appear in result_0 and the
+        # craft to fail. Item-typed ingredients alone don't match any recipe,
+        # so placing them first means the partial state in the grid never
+        # triggers an unintended recipe match.
+        items = dict(sorted(
+            items.items(),
+            key=lambda kv: (
+                0 if "item" in kv[1] else 1,  # item-typed first
+                kv[0],                          # then by key letter for stable order
+            ),
+        ))
         # place each item in order
         for k, v in items.items():
             signal = k

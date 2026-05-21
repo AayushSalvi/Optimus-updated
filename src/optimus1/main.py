@@ -434,6 +434,44 @@ def main(cfg: DictConfig):
                 cfg, env, logger, current_monitos, planning, obs, memory_bank, ledger=ledger
             )
             video_file = env.save_video(task, status)
+
+            # [AMEP] Capture failure metadata when status == "failed"
+            #   Pulls from the ledger (pending outcomes) and current_monitos (which
+            #   sub-task failed and at what step count).
+            _amep_failure_metadata = None
+            if status == "failed":
+                try:
+                    _summary = current_monitos.get_metric() if current_monitos else {}
+                    # Find the last sub-task with SuccessMonitor=0 (or last entry if all succeeded)
+                    _failed_subtask = ""
+                    _failed_at_step = int(steps) if steps else 0
+                    if isinstance(_summary, dict):
+                        for sub_name, sub_metrics in _summary.items():
+                            if isinstance(sub_metrics, dict) and sub_metrics.get("SuccessMonitor") == 0:
+                                _failed_subtask = sub_name
+                                _step_val = sub_metrics.get("StepMonitor", 0)
+                                if isinstance(_step_val, (int, float)):
+                                    _failed_at_step = int(_step_val)
+                    _pending_outcomes = []
+                    if ledger is not None:
+                        try:
+                            _pending_outcomes = list(ledger.pending())
+                        except Exception:
+                            pass
+                    _amep_failure_metadata = {
+                        "failed_subtask": _failed_subtask,
+                        "failed_at_step": _failed_at_step,
+                        "pending_outcomes": _pending_outcomes,
+                        "last_error": "",  # could populate from a logged warning later
+                        "sub_task_summary": _summary if isinstance(_summary, dict) else {},
+                    }
+                    logger.info(
+                        f"[AMEP] Captured failure metadata: failed at {_failed_subtask!r} "
+                        f"(step {_failed_at_step}); pending outcomes: {_pending_outcomes}"
+                    )
+                except Exception as _e:
+                    logger.warning(f"[AMEP] failure metadata capture failed: {_e}")
+
             # * save planning
             t = memory_bank.save_plan(
                 task,
@@ -444,6 +482,7 @@ def main(cfg: DictConfig):
                 steps,
                 video_file,
                 environment=environment,
+                failure_metadata=_amep_failure_metadata,
             )
             # except Exception as e:
             #     logger.critical(f"Error: {e}")

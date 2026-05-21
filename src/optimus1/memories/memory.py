@@ -116,6 +116,7 @@ class Memory:
         steps: int | float,
         video_file: MultiThreadServerAPI | None = None,
         environment: str = "none",
+        failure_metadata: dict | None = None,
     ):
         thread = MultiThreadServerAPI(
             self._save_plan,
@@ -128,6 +129,7 @@ class Memory:
                 steps,
                 video_file,
                 environment,
+                failure_metadata,
             ),
         )
         thread.start()
@@ -143,6 +145,7 @@ class Memory:
         steps: int | float,
         video_file: MultiThreadServerAPI | None = None,
         environment: str = "none",
+        failure_metadata: dict | None = None,
     ):
         assert status in [
             "success",
@@ -172,18 +175,21 @@ class Memory:
             video_file.join()
             vf = video_file.get_result()
         with self._lock, open(memory_file, "w") as fp:
-            memory["plan"].append(
-                {
-                    "id": shortuuid.uuid(),
-                    "environment": environment,
-                    "visual_info": visual_info,
-                    "goal": goal,
-                    "video": vf,
-                    "planning": planning,
-                    "status": status,
-                    "steps": steps,
-                }
-            )
+            entry = {
+                "id": shortuuid.uuid(),
+                "environment": environment,
+                "visual_info": visual_info,
+                "goal": goal,
+                "video": vf,
+                "planning": planning,
+                "status": status,
+                "steps": steps,
+            }
+            if failure_metadata is not None and status == "failed":
+                entry["failure_metadata"] = failure_metadata
+            from datetime import datetime as _dt
+            entry["saved_at"] = _dt.utcnow().isoformat(timespec="seconds") + "Z"
+            memory["plan"].append(entry)
             json.dump(memory, fp, indent=2)
 
     def save_reflection(
@@ -260,6 +266,54 @@ class Memory:
     def retrieve_plan(self, task: str):
         task_key = task.replace(" ", "_").lower()
         has_done = False
+
+        # [AMEP] Tier 1: query the unified retriever for past trajectories.
+        #   Returns top-K successes (multi-example injection) and optionally one
+        #   labeled past failure to warn the planner away from known dead ends.
+        try:
+            from optimus1.amep import (
+                retrieve_for_task,
+                render_success_examples,
+                render_failure_warning,
+            )
+            amep_env = getattr(self, "current_environment", "") or ""
+            amep_result = retrieve_for_task(
+                task=task,
+                environment=amep_env,
+                initial_inventory={},
+                scorer_kind="rule",
+                k_success=3,
+            )
+            if amep_result.has_any() and amep_result.successes:
+                best = amep_result.best_success()
+                plan = best.record.planning
+                render_plan = {}
+                for idx, p in enumerate(plan):
+                    render_plan[f"step {idx+1}"] = p
+                goal = best.record.goal or (plan[-1].get("goal", [""])[0] if plan else "")
+                visual_info = best.record.visual_info or "None"
+                # Use only the top-1 example to match Optimus-1's single-JSON
+                # planner output format. Multi-example injection breaks parsing.
+                # Supplementary examples + failure warning are deferred to Phase 2,
+                # which requires redesigning the planner prompt.
+                examples = PLAN_EXAMPLE_FORMAT.format(
+                    task_key.replace("_", " "),
+                    visual_info,
+                    self.retrieve_graph(goal),
+                    json.dumps(render_plan),
+                )
+                print(
+                    f"[AMEP] task={task!r} env={amep_env[:30]!r}: "
+                    f"primary={best.record.steps}-step run (score={best.score:.2f}), "
+                    f"+{len(amep_result.successes)-1} more successes"
+                    f"{', +1 failure warning' if amep_result.failure else ''}"
+                )
+                return examples, True
+        except FileNotFoundError:
+            pass
+        except Exception as _e:
+            print(f"[AMEP] retriever failed ({type(_e).__name__}: {_e}), falling through")
+
         if _MEMORY_BANK is not None:
             mb_entry = _MEMORY_BANK.get(task_key)
             if mb_entry is None:

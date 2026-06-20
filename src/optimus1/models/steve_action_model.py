@@ -17,6 +17,13 @@ from .utils import image2MineRLArray
 FPS = 20
 
 
+# [PROMPT-SWAP EXPERIMENT] STEVE-1 behavior is highly prompt-sensitive.
+# "mine cobblestone" conditions wandering; "dig down" may condition digging.
+PROMPT_REMAP = {
+    "mine cobblestone": "dig down",
+}
+
+
 class ActionModel(BaseActionModel):
     def __init__(
         self,
@@ -56,6 +63,12 @@ class ActionModel(BaseActionModel):
         return self.prompt_embed
 
     def action(self, prompt: str, observation: List[str]):
+        _orig = prompt
+        prompt = PROMPT_REMAP.get(prompt.strip().lower(), prompt)
+        if prompt != _orig:
+            print(f"[PROMPT-REMAP] {_orig!r} -> {prompt!r}", flush=True)
+        else:
+            print(f"[PROMPT-PASS] {_orig!r}", flush=True)
         obs = image2MineRLArray(observation[-1])
 
         minerl_obs = {"pov": obs}

@@ -22,6 +22,29 @@
           1
         ]
       }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          2
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          8
+        ]
+      },
+      {
+        "task": "craft chest",
+        "goal": [
+          "chest",
+          1
+        ]
+      }
     ]
   ]
 }

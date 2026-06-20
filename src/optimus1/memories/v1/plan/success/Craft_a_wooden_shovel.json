@@ -1,11 +1,11 @@
 {
   "plan": [
     {
-      "id": "ahGGTvWacrGjtFp7eEXtAK",
+      "id": "UaexcQpYjcPrykbUFqP5s8",
       "environment": "forest",
       "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
-      "goal": "ladder",
-      "video": "videos/v1/Craft_a_ladder/failed/6334a_2026_04_22_00_16_41.mp4",
+      "goal": "wooden shovel",
+      "video": "videos/v1/Craft_a_wooden_shovel/success/f7de8_2026_04_27_21_45_08.mp4",
       "planning": [
         {
           "task": "mine logs",
@@ -19,66 +19,13 @@
           "goal": [
             "planks",
             8
-          ]
-        },
-        {
-          "task": "craft crafting_table",
-          "goal": [
-            "crafting_table",
-            1
-          ]
-        },
-        {
-          "task": "craft stick",
-          "goal": [
-            "stick",
-            8
-          ]
-        },
-        {
-          "task": "craft ladder",
-          "goal": [
-            "ladder",
-            1
-          ]
-        }
-      ],
-      "status": "failed",
-      "steps": 2397
-    },
-    {
-      "id": "efAfw65jG6UPaxbGmfZCQC",
-      "environment": "desert",
-      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: desert",
-      "goal": "ladder",
-      "video": "videos/v1/Craft_a_ladder/failed/88fe6_2026_04_22_01_01_03.mp4",
-      "planning": [
-        {
-          "task": "mine logs",
-          "goal": [
-            "logs",
-            2
-          ]
-        },
-        {
-          "task": "craft planks",
-          "goal": [
-            "planks",
-            8
-          ]
-        },
-        {
-          "task": "craft crafting_table",
-          "goal": [
-            "crafting_table",
-            1
           ]
         },
         {
           "task": "chop tree",
           "goal": [
             "logs",
-            1
+            4
           ]
         },
         {
@@ -89,45 +36,6 @@
           ]
         },
         {
-          "task": "craft stick",
-          "goal": [
-            "stick",
-            8
-          ]
-        },
-        {
-          "task": "craft ladder",
-          "goal": [
-            "ladder",
-            1
-          ]
-        }
-      ],
-      "status": "failed",
-      "steps": 2397
-    },
-    {
-      "id": "aT2joKFHMjLfgT7LPWipSJ",
-      "environment": "forest",
-      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
-      "goal": "ladder",
-      "video": "videos/v1/Craft_a_ladder/failed/f4ba1_2026_04_22_01_50_18.mp4",
-      "planning": [
-        {
-          "task": "mine logs",
-          "goal": [
-            "logs",
-            2
-          ]
-        },
-        {
-          "task": "craft planks",
-          "goal": [
-            "planks",
-            8
-          ]
-        },
-        {
           "task": "craft crafting_table",
           "goal": [
             "crafting_table",
@@ -135,43 +43,29 @@
           ]
         },
         {
-          "task": "chop tree",
+          "task": "craft stick",
           "goal": [
-            "logs",
-            1
-          ]
-        },
-        {
-          "task": "craft planks",
-          "goal": [
-            "planks",
+            "stick",
             4
           ]
         },
         {
-          "task": "craft stick",
+          "task": "craft wooden_shovel",
           "goal": [
-            "stick",
-            8
-          ]
-        },
-        {
-          "task": "craft ladder",
-          "goal": [
-            "ladder",
+            "wooden_shovel",
             1
           ]
         }
       ],
-      "status": "failed",
-      "steps": 3597
+      "status": "success",
+      "steps": 2368
     },
     {
-      "id": "fjLLsWJGKXZ6F2QkAMqPnE",
+      "id": "E5qwqkA9NS7ymknqcudJ8p",
       "environment": "forest",
       "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
-      "goal": "ladder",
-      "video": "videos/v1/Craft_a_ladder/failed/e54b5_2026_04_23_23_25_04.mp4",
+      "goal": "wooden shovel",
+      "video": "videos/v1/Craft_a_wooden_shovel/success/7d9d1_2026_05_06_16_23_16.mp4",
       "planning": [
         {
           "task": "mine logs",
@@ -181,17 +75,10 @@
           ]
         },
         {
-          "task": "chop tree",
-          "goal": [
-            "oak_logs",
-            1
-          ]
-        },
-        {
           "task": "craft planks",
           "goal": [
             "planks",
-            7
+            8
           ]
         },
         {
@@ -205,19 +92,113 @@
           "task": "craft stick",
           "goal": [
             "stick",
-            8
+            4
           ]
         },
         {
-          "task": "craft ladder",
+          "task": "craft wooden_shovel",
           "goal": [
-            "ladder",
+            "wooden_shovel",
             1
           ]
         }
       ],
-      "status": "failed",
-      "steps": 3597
+      "status": "success",
+      "steps": 2216
+    },
+    {
+      "id": "VyxPNnokuBiWtZjLGMKVy6",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "wooden shovel",
+      "video": "videos/v1/Craft_a_wooden_shovel/success/19563_2026_05_17_20_28_41.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            2
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_shovel",
+          "goal": [
+            "wooden_shovel",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1666,
+      "saved_at": "2026-05-17T20:28:50Z"
+    },
+    {
+      "id": "3xqoMwzppaYz8yaptvhbh2",
+      "environment": "forest",
+      "visual_info": "health bar: full  \nfood bar: full  \nhotbar: empty  \nenvironment: forest",
+      "goal": "wooden shovel",
+      "video": "videos/v1/Craft_a_wooden_shovel/success/28d52_2026_05_17_23_23_24.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            2
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_shovel",
+          "goal": [
+            "wooden_shovel",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1750,
+      "saved_at": "2026-05-17T23:23:33Z"
     }
   ]
 }

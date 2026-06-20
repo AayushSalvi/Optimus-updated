@@ -5,7 +5,9 @@ import openai
 
 from .base_model import BasePlanningModel, BaseReflectionModel
 
-client = openai.OpenAI(
+from optimus1 import llm_config as _llm_config
+client = _llm_config.make_client(timeout=2000, max_retries=3)
+_UNUSED_OLD_CLIENT = lambda: openai.OpenAI(
     api_key="not-needed", base_url="http://localhost:8000/v1",
     timeout=2000,
     max_retries=3,
@@ -152,7 +154,7 @@ class PlanningModel(BasePlanningModel, BaseReflectionModel):
                     ],
                 },
             ],
-            model="Qwen/Qwen3-VL-8B-Instruct",
+            model=_llm_config.get_model(),
             max_tokens=2000,
         )
         return response.choices[0].message.content
@@ -189,7 +191,7 @@ class PlanningModel(BasePlanningModel, BaseReflectionModel):
                     ],
                 },
             ],
-            model="Qwen/Qwen3-VL-8B-Instruct",
+            model=_llm_config.get_model(),
             max_tokens=2000,
         )
         return response.choices[0].message.content
@@ -252,7 +254,7 @@ class PlanningModel(BasePlanningModel, BaseReflectionModel):
                     ],
                 }
             ],
-            model="Qwen/Qwen3-VL-8B-Instruct",
+            model=_llm_config.get_model(),
             max_tokens=2000,
         )
         return response.choices[0].message.content
@@ -371,7 +373,7 @@ class PlanningModel(BasePlanningModel, BaseReflectionModel):
                     "content": content,
                 }
             ],
-            model="Qwen/Qwen3-VL-8B-Instruct",
+            model=_llm_config.get_model(),
             max_tokens=2000,
         )
         return result.choices[0].message.content

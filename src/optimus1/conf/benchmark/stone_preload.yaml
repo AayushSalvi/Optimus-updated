@@ -1,0 +1,23 @@
+# @package _global_
+defaults:
+  - _self_
+env:
+  name: StoneTaskEnv-v0
+  max_minutes: 6
+  initial_inventory:
+    - {type: "oak_log", quantity: 10, slot: 0}
+    - {type: "cobblestone", quantity: 10, slot: 1}
+  times: 1
+  prefer_biome: plains
+evaluate: [0]
+all_task:
+  - {id: 0, type: craft, instruction: Craft a stone shovel} 
+  - {id: 1, type: craft, instruction: Craft a stone pickaxe } 
+  - {id: 2, type: craft, instruction: Craft a stone axe} 
+  - {id: 3, type: craft, instruction: Craft a stone hoe} 
+  - {id: 4, type: craft, instruction: Smelt a charcoal} 
+  - {id: 5, type: craft, instruction: Craft a smoker}
+  - {id: 6, type: craft, instruction: Craft a stone sword} 
+  - {id: 7, type: craft, instruction: Craft a furnace} 
+  - {id: 8, type: craft, instruction: Craft a torch}
+  - {id: 9, type: mine, instruction: dig down to mine cobblestone}

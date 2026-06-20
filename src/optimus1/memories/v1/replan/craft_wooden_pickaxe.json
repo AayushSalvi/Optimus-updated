@@ -31,6 +31,1418 @@
           1
         ]
       }
+    ],
+    [
+      {
+        "task": "acquire log",
+        "goal": [
+          "log",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          3
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          3
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "mine log",
+        "goal": [
+          "log",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "mine wooden log",
+        "goal": [
+          "wooden_log",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "mine wood from trees",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop wood",
+        "goal": [
+          "wood",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop wood log",
+        "goal": [
+          "wood log",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          3
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop wood log",
+        "goal": [
+          "wood log",
+          1
+        ]
+      },
+      {
+        "task": "convert to planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop log",
+        "goal": [
+          "log",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ]
+  ],
+  "missing material: {\"crafting_table\": 1}": [
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft sticks",
+        "goal": [
+          "sticks",
+          2
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "mine log",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          4
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          16
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft sticks",
+        "goal": [
+          "sticks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "log",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          2
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          8
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft sticks",
+        "goal": [
+          "sticks",
+          2
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          2
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          8
+        ]
+      },
+      {
+        "task": "craft sticks",
+        "goal": [
+          "sticks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop logs",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          8
+        ]
+      },
+      {
+        "task": "craft crafting_table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "mine log",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft sticks",
+        "goal": [
+          "sticks",
+          2
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ]
+  ],
+  "missing material: {\"planks\": 1}": [
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          3
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ]
+  ],
+  "missing material: {\"planks\": 2}": [
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop logs",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "log",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ]
+  ],
+  "missing material: {\"stick\": 2}": [
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft sticks",
+        "goal": [
+          "sticks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft sticks",
+        "goal": [
+          "sticks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft sticks",
+        "goal": [
+          "sticks",
+          4
+        ]
+      },
+      {
+        "task": "craft wooden_pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      },
+      {
+        "task": "craft wooden pickaxe",
+        "goal": [
+          "wooden_pickaxe",
+          1
+        ]
+      }
     ]
   ]
 }

@@ -21,3 +21,23 @@ videos/
 imgs
 *.zip
 *.tar.gz
+# Reflection screenshots (per-run artifacts, not code)
+src/optimus1/memories/v1/reflection/img/
+*.jpg
+*.jpeg
+*.png
+
+# Local backup files from in-place edits
+*.bak_*
+*.bak
+
+# Runtime spatial memory store (per-run data)
+src/optimus1/memories/v1/spatial/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Run logs
+/tmp/*.log
+*.log

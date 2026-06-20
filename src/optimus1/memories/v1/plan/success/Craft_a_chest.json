@@ -77,6 +77,46 @@
       ],
       "status": "success",
       "steps": 1707
+    },
+    {
+      "id": "HnEtsfRZcR5eyFKoUcPNpX",
+      "environment": "birch forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: birch forest",
+      "goal": "wooden planks (to craft a chest, you need 8 wooden planks)",
+      "video": "videos/v1/Craft_a_chest/success/ec5e8_2026_06_18_03_06_10.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            12
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1839,
+      "saved_at": "2026-06-18T03:06:22Z"
     }
   ]
 }

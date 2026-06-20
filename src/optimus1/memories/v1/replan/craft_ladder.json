@@ -30,5 +30,67 @@
         ]
       }
     ]
+  ],
+  "missing material: {\"crafting_table\": 1}": [
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          1
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "craft ladder",
+        "goal": [
+          "ladder",
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          4
+        ]
+      },
+      {
+        "task": "craft crafting table",
+        "goal": [
+          "crafting_table",
+          1
+        ]
+      },
+      {
+        "task": "chop sticks",
+        "goal": [
+          "sticks",
+          7
+        ]
+      },
+      {
+        "task": "craft ladder",
+        "goal": [
+          "ladder",
+          1
+        ]
+      }
+    ]
   ]
 }

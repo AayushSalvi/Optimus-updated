@@ -1,0 +1,27 @@
+{
+  "missing material: {\"furnace\": 1}": [
+    [
+      {
+        "task": "mine stone",
+        "goal": [
+          "stone_crafting_materials",
+          8
+        ]
+      },
+      {
+        "task": "craft furnace",
+        "goal": [
+          "furnace",
+          1
+        ]
+      },
+      {
+        "task": "smelt charcoal",
+        "goal": [
+          "charcoal",
+          1
+        ]
+      }
+    ]
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "forest": {
+    "done": [],
+    "continue": [
+      [
+        "chop a tree_forest_continue_old_Dnzn3XunfdpPrKrnuFGjbE.jpg",
+        "chop a tree_forest_continue_new_Dnzn3XunfdpPrKrnuFGjbE.jpg"
+      ]
+    ],
+    "replan": [
+      [
+        "chop a tree_forest_replan_old_jfdNXRBisHh3zYugFBpv4b.jpg",
+        "chop a tree_forest_replan_new_jfdNXRBisHh3zYugFBpv4b.jpg"
+      ],
+      [
+        "chop a tree_forest_replan_old_HxmEHyAGF8ZinJSToirjYF.jpg",
+        "chop a tree_forest_replan_new_HxmEHyAGF8ZinJSToirjYF.jpg"
+      ]
+    ]
+  }
+}

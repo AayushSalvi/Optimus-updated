@@ -28,7 +28,7 @@ Five distinct failure modes are observed across the Wooden→Redstone sweeps; ea
 
 ### Case study
 
-![Wooden pickaxe case study](docs/case_study_wooden (1).png)
+![Wooden pickaxe case study](docs/case_study_wooden.png)
 
 Real frames from our agent's wooden_pickaxe trajectory (left) vs. the published Optimus-1 Figure 9 trajectory for the same task (right). Same task, same crafting depth, identical knowledge graph. Our memory_bank retrieves the canonical 5-step plan up front and the agent completes in 2,431 steps with no replan. Optimus-1's planner proposes an under-resourced plan that fails at step 5 and recovers only via in-flight replan.
 

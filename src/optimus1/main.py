@@ -148,7 +148,13 @@ def agent_do(
                 if not env.can_open_inventory:
                     env.can_open_inventory = True
                 helper.reset(task, pbar, num_step, logger)
-                done, info = helper.step(task, goal)  # type: ignore
+                try:
+                    done, info = helper.step(task, goal)  # type: ignore
+                except RuntimeError as _craft_err:
+                    # [CRAFT-CRASH WRAPPER] env terminated mid-craft (budget overflow
+                    # or env death). Mark sub-task failed; do NOT crash the whole sweep.
+                    logger.warning(f"[red]helper.step crashed: {_craft_err}; treating as failed sub-task[/red]")
+                    done, info = True, {"craft_crash": str(_craft_err)}
                 steps = helper.get_task_steps(task)
 
                 env.can_open_inventory = False
@@ -488,12 +494,40 @@ def main(cfg: DictConfig):
             try:
                 _preload = cfg["env"].get("initial_inventory", []) if hasattr(cfg["env"], "get") else cfg["env"]["initial_inventory"]
                 _preloaded_types = {str(it.get("type", "")) for it in _preload} if _preload else set()
-                if "cobblestone" in _preloaded_types:
+                if "wooden_pickaxe" in _preloaded_types and "cobblestone" in _preloaded_types and "stick" in _preloaded_types and len(_preloaded_types) <= 6:
                     planning = [{"task": "craft stone_pickaxe", "goal": ["stone_pickaxe", 1]}]
                     logger.info(f"[yellow][CRAFT-TEST] preloaded inventory detected {_preloaded_types}; overriding plan to single craft step[/yellow]")
             except Exception as _e:
                 logger.warning(f"[CRAFT-TEST] override skipped: {_e}")
 
+
+            # [PLAN-PRUNE] Drop steps already satisfied by current inventory.
+            # Canonical plans (from memory_bank_v3 / AMEP) assume empty inventory,
+            # so iron+ tiers generate 11-step chains that include preloaded
+            # intermediates. Pruning shortens these to 3-5 step plans the craft
+            # helper can execute reliably. The final target step is always kept.
+            try:
+                _inv = {}
+                if isinstance(obs, dict) and isinstance(obs.get("inventory"), dict):
+                    _inv = obs["inventory"]
+                elif hasattr(env, "status_mod") and isinstance(getattr(env.status_mod, "inventory", None), dict):
+                    _inv = env.status_mod.inventory
+                if isinstance(_inv, dict) and isinstance(planning, list) and len(planning) > 1:
+                    _orig = len(planning)
+                    _pruned = []
+                    for _i, _step in enumerate(planning):
+                        _g = _step.get("goal", [None, 0])
+                        _g_item, _g_count = _g[0], _g[1]
+                        _is_last = (_i == len(planning) - 1)
+                        if _is_last or _inv.get(_g_item, 0) < _g_count:
+                            _pruned.append(_step)
+                        else:
+                            logger.info(f"[PLAN-PRUNE] dropped {_step.get('task','?')!r} (have {_inv.get(_g_item,0)} {_g_item} >= {_g_count})")
+                    if len(_pruned) < _orig:
+                        logger.info(f"[PLAN-PRUNE] {_orig} -> {len(_pruned)} steps")
+                    planning = _pruned
+            except Exception as _pe:
+                logger.warning(f"[PLAN-PRUNE] skipped: {_pe}")
             logger.info(f"[yellow]Plan: {planning}[yellow]")
             # return
 

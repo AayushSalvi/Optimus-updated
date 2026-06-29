@@ -1,0 +1,63 @@
+# @package _global_
+defaults:
+- _self_
+env:
+  name: DiamondTaskEnv-v0
+  max_minutes: 15
+  initial_inventory:
+  - type: oak_log
+    quantity: 12
+    slot: 0
+  - type: diamond
+    quantity: 16
+    slot: 1
+  - type: cobblestone
+    quantity: 16
+    slot: 2
+  - type: iron_pickaxe
+    quantity: 1
+    slot: 3
+  - type: crafting_table
+    quantity: 4
+    slot: 8
+  - type: furnace
+    quantity: 2
+    slot: 9
+  - type: oak_planks
+    quantity: 32
+    slot: 13
+  - type: stick
+    quantity: 16
+    slot: 14
+  - type: wooden_pickaxe
+    quantity: 1
+    slot: 15
+  - type: stone_pickaxe
+    quantity: 1
+    slot: 16
+  times: 1
+  prefer_biome: plains
+evaluate:
+- 0
+all_task:
+- id: 0
+  type: craft
+  instruction: Craft a diamond shovel
+- id: 1
+  type: craft
+  instruction: Craft a diamond pickaxe
+- id: 2
+  type: craft
+  instruction: Craft a diamond axe
+- id: 3
+  type: craft
+  instruction: Craft a diamond hoe
+- id: 4
+  type: craft
+  instruction: Craft a diamond sword
+- id: 5
+  type: craft
+  instruction: Dig down and mine a diamond
+- id: 6
+  type: craft
+  instruction: Craft a jukebox

@@ -453,9 +453,10 @@ class CraftHelper:
         # the SAME cell. This makes cursor accuracy irrelevant — a missed click
         # is simply retried. Only applies to grid placements where delta is
         # measurable; capped so an impossible placement fails cleanly.
+        _before = -1  # [BUG1 FIX] guard against UnboundLocalError when else-branch is taken
         if _moved_item is not None:
             _placed = False
-            for _try in range(5):
+            for _try in range(10):
                 _before = self._inv_count(_moved_item)
                 self.move_to_slot(SLOT_POS, item_from)
                 self._null_action(1)
@@ -475,7 +476,7 @@ class CraftHelper:
                     print(f"[VERIFY-RETRY] {_moved_item} -> {item_to} MISSED (attempt {_try+1}, delta=0), recentering and retrying", file=sys.stderr, flush=True)
                     self._recenter_cursor()
             if not _placed:
-                print(f"[VERIFY-RETRY] {_moved_item} -> {item_to} FAILED after 5 attempts; placement unreliable", file=sys.stderr, flush=True)
+                print(f"[VERIFY-RETRY] {_moved_item} -> {item_to} FAILED after 10 attempts; placement unreliable", file=sys.stderr, flush=True)
             self.random_move_or_stay()
         else:
             # non-grid placement (no measurable delta): original behavior

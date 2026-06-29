@@ -41,3 +41,34 @@ __pycache__/
 # Run logs
 /tmp/*.log
 *.log
+
+# === Cleanup additions (StructAgent reorg) ===
+# Whitelist documentation figures past the *.png line
+!docs/**/*.png
+!docs/**/*.svg
+!docs/**/*.pdf
+
+# Runtime artifacts (agent state, not source code)
+src/optimus1/memories/v1/plan/
+src/optimus1/memories/v1/reflection/
+src/optimus1/memories/v1/replan/
+
+# Backup files
+*.bak
+*.bak_*
+.bak_*
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Test/log scratch
+/tmp/
+*.log
+nohup.out
+
+# Local config (NEVER commit API keys)
+.env
+.env.local
+local_config.py

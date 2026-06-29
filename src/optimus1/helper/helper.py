@@ -9,6 +9,7 @@ from .jarvis_smelt_helper import *
 
 class Helper:
     def __init__(self, env):
+        self.env = env  # [PRELOAD-SKIP] store env for inventory pre-check
         self.craft_helper = CraftHelper(env)
         self.equip_helper = EquipHelper(env)
         self.smelt_helper = SmeltHelper(env)
@@ -36,6 +37,25 @@ class Helper:
             return -1
 
     def step(self, task: str, goal: tuple):
+        # [PRELOAD-SKIP] If goal already satisfied in current inventory, return done.
+        try:
+            item, count = goal[0], goal[1]
+            env_type = type(self.env).__name__
+            has_sm = hasattr(self.env, "status_mod")
+            inv = None
+            if has_sm:
+                inv = getattr(self.env.status_mod, "inventory", None)
+            inv_type = type(inv).__name__
+            inv_keys = list(inv.keys())[:8] if isinstance(inv, dict) else "n/a"
+            inv_count = inv.get(item, 0) if isinstance(inv, dict) else "n/a"
+            print(f"[PRELOAD-CHECK] task={task!r} goal=({item},{count}) "
+                  f"env={env_type} status_mod={has_sm} inv_type={inv_type} "
+                  f"inv_has_{item}={inv_count} inv_keys_sample={inv_keys}")
+            if isinstance(inv, dict) and inv.get(item, 0) >= count:
+                print(f"[PRELOAD-SKIP] {task}: have {inv.get(item,0)} {item} >= {count}; skipping dispatch")
+                return True, {"preload_skip": True}
+        except Exception as _e:
+            print(f"[PRELOAD-CHECK-ERR] {type(_e).__name__}: {_e}")
         if "equip" in task:
             return self.equip_helper.equip_item(goal[0])
         elif "craft" in task:

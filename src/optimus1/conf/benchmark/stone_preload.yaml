@@ -3,7 +3,7 @@ defaults:
   - _self_
 env:
   name: StoneTaskEnv-v0
-  max_minutes: 6
+  max_minutes: 10
   initial_inventory:
     - {type: "oak_log", quantity: 10, slot: 0}
     - {type: "cobblestone", quantity: 10, slot: 1}

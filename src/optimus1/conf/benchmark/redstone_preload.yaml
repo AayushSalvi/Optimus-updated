@@ -1,0 +1,51 @@
+# @package _global_
+defaults:
+- _self_
+env:
+  name: RedstoneTaskEnv-v0
+  max_minutes: 15
+  initial_inventory:
+  - type: oak_log
+    quantity: 12
+    slot: 0
+  - type: cobblestone
+    quantity: 16
+    slot: 1
+  - type: iron_ingot
+    quantity: 12
+    slot: 2
+  - type: coal
+    quantity: 8
+    slot: 3
+  - type: iron_ore
+    quantity: 16
+    slot: 4
+  - type: redstone
+    quantity: 16
+    slot: 5
+  times: 1
+  prefer_biome: plains
+evaluate:
+- 0
+all_task:
+- id: 0
+  type: craft
+  instruction: Craft a piston
+- id: 1
+  type: craft
+  instruction: Craft a redstone torch
+- id: 2
+  type: craft
+  instruction: Craft an activator rail
+- id: 3
+  type: craft
+  instruction: Craft a compass
+- id: 4
+  type: craft
+  instruction: Craft a dropper
+- id: 5
+  type: craft
+  instruction: Craft a note block
+- id: 6
+  type: mine
+  instruction: dig down to mine redstone

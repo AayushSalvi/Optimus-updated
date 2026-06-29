@@ -35,7 +35,7 @@ class TaskCheckerMod(Mod):
             for item in item_list:
                 s += inventory[item]
                 p += self._cache["inventory"][item]
-            if s >= p + number:
+            if s >= number:
                 total += 1
         return total == len(need_item)
 

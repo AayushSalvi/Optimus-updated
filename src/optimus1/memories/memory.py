@@ -264,18 +264,23 @@ class Memory:
                 json.dump(memory, fp, indent=2)
 
     def retrieve_plan(self, task: str):
+        """Combined retrieval: memory_bank (canonical) + AMEP (recent trajectory).
+
+        Memory_bank provides the structurally correct plan from the JARVIS-1
+        knowledge base. AMEP provides the closest past trajectory's visual
+        context. When both hit, memory_bank's plan structure wins (it's
+        authoritative); AMEP contributes visual_info. When only one hits, we
+        use whichever is available.
+        """
         task_key = task.replace(" ", "_").lower()
         has_done = False
 
-        # [AMEP] Tier 1: query the unified retriever for past trajectories.
-        #   Returns top-K successes (multi-example injection) and optionally one
-        #   labeled past failure to warn the planner away from known dead ends.
+        # ---------- AMEP retrieval (visual_info + fallback plan) ----------
+        amep_visual_info = "None"
+        amep_plan = None
+        amep_goal = ""
         try:
-            from optimus1.amep import (
-                retrieve_for_task,
-                render_success_examples,
-                render_failure_warning,
-            )
+            from optimus1.amep import retrieve_for_task
             amep_env = getattr(self, "current_environment", "") or ""
             amep_result = retrieve_for_task(
                 task=task,
@@ -286,124 +291,95 @@ class Memory:
             )
             if amep_result.has_any() and amep_result.successes:
                 best = amep_result.best_success()
-                plan = best.record.planning
-                render_plan = {}
-                for idx, p in enumerate(plan):
-                    render_plan[f"step {idx+1}"] = p
-                goal = best.record.goal or (plan[-1].get("goal", [""])[0] if plan else "")
-                visual_info = best.record.visual_info or "None"
-                # Use only the top-1 example to match Optimus-1's single-JSON
-                # planner output format. Multi-example injection breaks parsing.
-                # Supplementary examples + failure warning are deferred to Phase 2,
-                # which requires redesigning the planner prompt.
-                examples = PLAN_EXAMPLE_FORMAT.format(
-                    task_key.replace("_", " "),
-                    visual_info,
-                    self.retrieve_graph(goal),
-                    json.dumps(render_plan),
+                amep_plan = best.record.planning
+                amep_visual_info = best.record.visual_info or "None"
+                amep_goal = best.record.goal or (
+                    amep_plan[-1].get("goal", [""])[0] if amep_plan else ""
                 )
                 print(
-                    f"[AMEP] task={task!r} env={amep_env[:30]!r}: "
-                    f"primary={best.record.steps}-step run (score={best.score:.2f}), "
-                    f"+{len(amep_result.successes)-1} more successes"
-                    f"{', +1 failure warning' if amep_result.failure else ''}"
+                    f"[AMEP] task={task!r}: retrieved {best.record.steps}-step "
+                    f"past success (score={best.score:.2f})"
                 )
-                return examples, True
         except FileNotFoundError:
             pass
         except Exception as _e:
-            print(f"[AMEP] retriever failed ({type(_e).__name__}: {_e}), falling through")
+            print(f"[AMEP] retriever failed ({type(_e).__name__}: {_e})")
 
+        # ---------- Memory bank lookup (canonical plan, authoritative) ----------
+        mb_plan = None
+        mb_task_key = task_key
         if _MEMORY_BANK is not None:
             mb_entry = _MEMORY_BANK.get(task_key)
             if mb_entry is None:
-                for prefix in ["craft_a_", "craft_an_", "craft_", "smelt_a_", "smelt_", "mine_", "chop_a_", "chop_", "dig_down_to_mine_"]:
+                for prefix in ["craft_a_", "craft_an_", "craft_", "smelt_a_",
+                               "smelt_", "mine_", "chop_a_", "chop_",
+                               "dig_down_to_mine_", "dig_down_and_mine_a_"]:
                     if task_key.startswith(prefix):
                         candidate = task_key[len(prefix):]
                         if candidate in _MEMORY_BANK:
                             mb_entry = _MEMORY_BANK[candidate]
-                            task_key = candidate
+                            mb_task_key = candidate
                             break
             if mb_entry is None:
                 best = process.extractOne(task_key, list(_MEMORY_BANK.keys()))
                 if best and best[1] > 60:
                     mb_entry = _MEMORY_BANK[best[0]]
-                    task_key = best[0]
+                    mb_task_key = best[0]
             if mb_entry and mb_entry.get("plans"):
-                has_done = True
-                plan_data = mb_entry["plans"][0]
-                plan = plan_data["steps"]
-                render_plan = {}
-                for idx, p in enumerate(plan):
-                    goal_item = p.get("text", "")
-                    goal_dict = p.get("goal", {})
-                    goal_qty = list(goal_dict.values())[0] if goal_dict else 1
-                    render_plan[f"step {idx+1}"] = {"task": f"{p['type']} {goal_item}", "goal": [goal_item, goal_qty]}
-                goal = plan[-1].get("text", task_key)
-                graph = self.retrieve_graph(goal)
-                examples = PLAN_EXAMPLE_FORMAT.format(task_key.replace("_", " "), "None", graph, json.dumps(render_plan))
-                print(f"[OUR MEMORY] Found plan for: {task_key} ({len(plan)} steps)")
-                return examples, has_done
-        task = task.replace(" ", "_").lower()
-        has_done = False
-        def get_best_match_recipe(target, choices):
-            res = process.extractOne(target, choices)
-            return res[0]
-        try:
-            lst_dir = os.listdir(f"src/optimus1/memories/{self.version}/plan/success")
-        except FileNotFoundError:
-            return None, False
-        target = get_best_match_recipe(task + ".json", lst_dir)
-        has_done = task + ".json" == target
-        print(f"[ORIGINAL] Find example: {target}")
-        with open(os.path.join(f"src/optimus1/memories/{self.version}/plan/success", target), "r") as fi:
-            data = json.load(fi)
-        plan = data["plan"][0]["planning"]
-        render_plan = {}
-        for idx, p in enumerate(plan):
-            render_plan[f"step {idx+1}"] = p
-        goal = (plan[-1]["goal"][0] if "goal" not in data["plan"][0] else data["plan"][0]["goal"])
-        visual_info = data["plan"][0].get("visual_info", "None")
-        examples = PLAN_EXAMPLE_FORMAT.format(target.replace(".json", "").replace("_", " "), visual_info, self.retrieve_graph(goal), json.dumps(render_plan))
-        return examples, has_done
-        def get_best_match_recipe(target: str, choices):
-            res = process.extractOne(target, choices)
-            return res[0]
+                mb_plan = mb_entry["plans"][0]["steps"]
 
-        try:
-            lst_dir = os.listdir(f"src/optimus1/memories/{self.version}/plan/success")
-        except FileNotFoundError:
-            # from stratch
-            return None, False
-        target = get_best_match_recipe(task + ".json", lst_dir)
-        has_done = task + ".json" == target
-        print(f"Find example: {target}")
-        with open(
-            os.path.join(f"src/optimus1/memories/{self.version}/plan/success", target),
-            "r",
-        ) as fi:
-            data = json.load(fi)
+        # ---------- Combine and render ----------
+        # Priority: memory_bank for plan structure (canonical), AMEP for visual.
+        if mb_plan:
+            has_done = True
+            render_plan = {}
+            for idx, p in enumerate(mb_plan):
+                goal_dict = p.get("goal", {})
+                if goal_dict:
+                    goal_name = list(goal_dict.keys())[0]
+                    goal_qty = list(goal_dict.values())[0]
+                else:
+                    goal_name = p.get("text", "")
+                    goal_qty = 1
+                task_verb = p.get("type", "craft")
+                task_text = p.get("text", goal_name)
+                render_plan[f"step {idx+1}"] = {
+                    "task": f"{task_verb} {task_text}",
+                    "goal": [goal_name, goal_qty],
+                }
+            visual_info = amep_visual_info  # may be "None" if AMEP missed
+            examples = PLAN_EXAMPLE_FORMAT.format(
+                mb_task_key.replace("_", " "),
+                visual_info,
+                self.retrieve_graph(mb_task_key),
+                json.dumps(render_plan),
+            )
+            print(
+                f"[MEMORY] task={task!r}: memory_bank canonical plan "
+                f"({len(mb_plan)} steps)"
+                + (f" + AMEP visual context" if amep_visual_info != "None" else "")
+            )
+            return examples, True
 
-        plan = data["plan"][0]["planning"]
+        # Memory bank missed; fall back to AMEP plan if it has one
+        if amep_plan:
+            has_done = True
+            render_plan = {}
+            for idx, p in enumerate(amep_plan):
+                render_plan[f"step {idx+1}"] = p
+            examples = PLAN_EXAMPLE_FORMAT.format(
+                task_key.replace("_", " "),
+                amep_visual_info,
+                self.retrieve_graph(amep_goal),
+                json.dumps(render_plan),
+            )
+            print(f"[AMEP-only] task={task!r}: memory_bank missed, "
+                  f"using AMEP retrieval ({len(amep_plan)} steps)")
+            return examples, True
 
-        render_plan = {}
-        for idx, p in enumerate(plan):
-            render_plan[f"step {idx+1}"] = p
-
-        goal = (
-            plan[-1]["goal"][0]
-            if "goal" not in data["plan"][0]
-            else data["plan"][0]["goal"]
-        )
-        visual_info = data["plan"][0].get("visual_info", "None")
-
-        examples = PLAN_EXAMPLE_FORMAT.format(
-            target.replace(".json", "").replace("_", " "),
-            visual_info,
-            self.retrieve_graph(goal),
-            json.dumps(render_plan),
-        )
-        return examples, has_done
+        # Both missed
+        print(f"[NO-RETRIEVAL] task={task!r}: no memory_bank or AMEP match")
+        return "", has_done
 
     def retrieve_reflection(self, task: str):
         import random

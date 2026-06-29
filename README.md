@@ -1,122 +1,176 @@
-# Unified Memory Bank for Minecraft Agents
+# StructAgent-Minecraft
 
-Memory bank and knowledge graph for the JARVIS-1 Minecraft agent. Replaces the static plan lookup with a rich, queryable knowledge base built from multiple data sources.
+Reference implementation of the Minecraft instantiation of StructAgent — a verifier-driven planning framework with two-sided memory (recipe-grounded knowledge graph + per-trajectory experience pool).
 
-## Overview
+This repository extends [Optimus-1](https://github.com/JiuTian-VL/Optimus-1) with combined memory retrieval, a multi-stage verifier, framework-level fixes to crafting and inventory tracking, and per-tier inventory preload.
 
-The system has two main components:
+Paper: *StructAgent: A Controllable Causal System for Self-Improving CUAs* (NeurIPS 2026 submission, under review).
 
-**Knowledge Graph** — A directed graph storing Minecraft crafting recipes, item properties, mob drops, and item tags. Auto-populated from three sources: JARVIS-1 recipe files, minecraft-data package, and MineDojo wiki.
+---
 
-**Memory Bank** — A per-task JSON structure with multiple plan variants, item-level knowledge, and crafting dependency trees. Built incrementally from JARVIS-1 and Optimus-1 data, enriched by the knowledge graph.
+## Architecture overview
 
-## Project Structure
+![System architecture](docs/architecture.png)
+
+Three roles (Planner, Verifier, Actor) share access to a two-sided memory (canonical recipe-derived plans + per-trajectory experience), connected via a verifier-derived State that tracks sub-task milestones as (verb, item, count) tuples.
+
+### Memory retrieval
+
+![Memory retrieval ablation](docs/memory_flow.png)
+
+The architectural contribution. Upstream Optimus-1 uses sequential retrieval (AMEP first, then fall back to memory_bank). Our combined retrieval consults both jointly: memory_bank is the authoritative source of plan structure, AMEP supplies visual context. On Iron-tier tasks, this changes the outcome from 0/17 passes to 11/17 passes on the same eight-fix substrate.
+
+### Failure attribution
+
+![Failure modes](docs/failure_attribution.png)
+
+Five distinct failure modes are observed across the Wooden→Redstone sweeps; each is routed to a specific component (Actor, Memory, or Planner) and addressed by a specific mitigation. See Appendix F.5 of the paper.
+
+### Case study
+
+![Wooden pickaxe case study](docs/case_study_wooden.png)
+
+Real frames from our agent's wooden_pickaxe trajectory (left) vs. the published Optimus-1 Figure 9 trajectory for the same task (right). Same task, same crafting depth, identical knowledge graph. Our memory_bank retrieves the canonical 5-step plan up front and the agent completes in 2,431 steps with no replan. Optimus-1's planner proposes an under-resourced plan that fails at step 5 and recovers only via in-flight replan.
+
+---
+
+## Repository layout
 
 ```
-unified_memory/
-├── knowledge_graph/
-│   ├── graph.py                     # MinecraftKnowledgeGraph class
-│   ├── data/
-│   │   ├── recipes.json             # 613 items, 848 recipes
-│   │   ├── items.json               # 975 items with tool/skill/biome info
-│   │   ├── mob_drops.json           # 53 mobs with loot tables
-│   │   └── tags.json                # 25 item group aliases
-│   ├── builders/
-│   │   ├── from_vanilla.py          # Parse JARVIS-1 recipe JSONs
-│   │   ├── from_minecraft_data.py   # Extract from minecraft-data package
-│   │   └── from_minedojo_wiki.py    # Enrich with biome data from MineDojo wiki
-│   └── tests/
-│       └── test_graph.py
-├── memory_bank/
-│   ├── convert_jarvis_memory.py     # JARVIS-1 memory.json → v1
-│   ├── merge_optimus_data.py        # + Optimus-1 experience pool → v2
-│   ├── fill_from_graph.py           # + knowledge graph → v3
-│   └── outputs/
-│       └── memory_bank_v3.json      # Final output
+StructAgent-Minecraft/
+├── src/optimus1/                  # Agent code (forked from Optimus-1)
+│   ├── main.py                    # Entry point, sweep loop, framework fixes
+│   ├── memories/
+│   │   └── memory.py              # Combined retrieval (memory_bank + AMEP)
+│   ├── helper/
+│   │   └── jarvis_craft_helper.py # Craft helper (JARVIS-1 lineage)
+│   ├── env/mods/
+│   │   └── task_checker.py        # Absolute-count verifier
+│   ├── conf/benchmark/
+│   │   ├── wooden.yaml            # Per-tier benchmark configs
+│   │   ├── stone_preload.yaml
+│   │   ├── iron_preload.yaml      # NEW: mining-bottleneck preload
+│   │   ├── golden_preload.yaml
+│   │   ├── redstone_preload.yaml
+│   │   ├── diamond_preload.yaml
+│   │   └── armor_preload.yaml
+│   ├── spatial_memory.py          # Spatial memory subsystem
+│   ├── stagnation_guard.py
+│   └── spatial_navigator.py
+├── memory_graph/                  # Recipe-grounded knowledge graph (subtree merge)
+│   ├── memory_bank_v3.json        # 613 items, 848 typed edges
+│   └── README.md
+├── docs/                          # Figures
+│   ├── architecture.svg/png
+│   ├── memory_flow.svg/png
+│   ├── failure_attribution.svg/png
+│   ├── case_study_wooden.svg/png
+│   └── case_study_frames/         # Real trajectory frames
+└── README.md
 ```
 
-## Setup
+---
+
+## Installation
 
 ```bash
-pip install minecraft-data
+# Clone with submodules / subtree content
+git clone https://github.com/AayushSalvi/StructAgent-Minecraft.git
+cd StructAgent-Minecraft
+
+# Create conda env (same as upstream Optimus-1)
+conda create -n structagent python=3.9
+conda activate structagent
+
+# Install dependencies
+pip install -r requirements.txt   # if present in upstream
+# Or follow upstream Optimus-1 install instructions
+
+# Java for MineRL
+# Java 8 required; see https://minerl.io
 ```
 
-MineDojo wiki data (optional, for biome enrichment):
-```bash
-pip install minedojo
-```
+### LLM configuration
 
-### External Data (not in repo, download separately)
-
-**JARVIS-1 repo** (for recipe files and base memory.json):
-```bash
-git clone https://github.com/CraftJarvis/JARVIS-1
-```
-
-**Optimus-1 experience pool** (for alternative plan variants in v2):
-Download from [HuggingFace](https://huggingface.co/datasets/MinecraftOptimus/Optimus1_Memory/).
-The `merge_optimus_data.py` script reads from the `plan/success/` folder.
-
-**MineDojo wiki** (optional, for biome enrichment):
-Downloaded via `WikiDataset(full=True, download=True)` — ~6,738 pages.
-
-## Build Pipeline
-
-### Step 1: Build Knowledge Graph Data
+Set environment variables for either OpenRouter (GPT-4o) or local vLLM:
 
 ```bash
-# Parse JARVIS-1 recipes
-python knowledge_graph/builders/from_vanilla.py --recipe_dir path/to/JARVIS-1/jarvis/assets/recipes
+# OpenRouter
+export LLM_PROVIDER=openrouter
+export LLM_MODEL=openai/gpt-4o
+export OPENROUTER_API_KEY=sk-...   # NEVER commit this
 
-# Extract items, mob drops, tags from minecraft-data
-python knowledge_graph/builders/from_minecraft_data.py --output_dir knowledge_graph/data
-
-# Enrich with biome data from MineDojo wiki
-python knowledge_graph/builders/from_minedojo_wiki.py --wiki_dir path/to/minedojo_data/wiki_full --items_path knowledge_graph/data/items.json
+# Or local vLLM
+unset LLM_PROVIDER LLM_MODEL
+# (defaults to localhost:8000 Qwen)
 ```
 
-### Step 2: Build Memory Bank
+---
+
+## Running
+
+### Single task
 
 ```bash
-# v1: Convert JARVIS-1 memory
-python memory_bank/convert_jarvis_memory.py
-
-# v2: Merge Optimus-1 plans
-python memory_bank/merge_optimus_data.py
-
-# v3: Fill with knowledge graph data
-python memory_bank/fill_from_graph.py --data_dir knowledge_graph/data --memory_bank memory_bank_v2.json --output memory_bank/outputs/memory_bank_v3.json
+# Wooden pickaxe, task 0
+CUDA_VISIBLE_DEVICES=0 xvfb-run -a python -m optimus1.main \
+    server.port=9000 benchmark=wooden evaluate="[0]" \
+    env.times=1 env.max_minutes=3
 ```
 
-### Test the Graph
+### Tier sweep
 
 ```bash
-python knowledge_graph/graph.py knowledge_graph/data
+# Run all 10 stone tasks
+for id in 0 1 2 3 4 5 6 7 8 9; do
+    rm -f src/optimus1/memories/v1/plan/failed/*.json
+    CUDA_VISIBLE_DEVICES=0 xvfb-run -a python -m optimus1.main \
+        server.port=9000 benchmark=stone evaluate="[$id]" \
+        env.times=1 env.max_minutes=6 \
+        2>&1 | tee /tmp/stone_${id}.log | tail -3
+done
 ```
 
-## Numbers
+---
 
-- 188 tasks in the memory bank
-- 1,125 total plans (188 from JARVIS-1, 937 from Optimus-1)
-- 636 item knowledge entries with tool requirements, biomes, mob sources
-- 181 crafting dependency trees
-- 613 unique items with recipes in the knowledge graph
-- 975 items with properties
-- 53 mobs with loot tables
+## Results summary
 
-## Data Sources
+| Tier | Tasks | Ours SR | Ours AS | Optimus-1 SR | Optimus-1 AS | Δ SR | Δ AS |
+|---|---|---|---|---|---|---|---|
+| Wooden   | 12 | **100.0%** | 1,763  | 98.60% | 841.94    | +1.4 pp  | +109% |
+| Stone    | 10 | 70.0%      | **2,333** | 92.35% | 2,518.88  | −22 pp   | −7%   |
+| Iron     | 17 | **64.7%**  | 10,760 | 46.69% | 6,017.85  | **+18 pp** | +79%  |
+| Golden   |  7 | **85.7%**  | **13,194** | 8.51%  | 15,527.07 | **+77 pp** | **−15%** |
+| Redstone |  7 | **57.1%**  | 14,190 | 25.02% | 12,709.99 | **+32 pp** | +12%  |
 
-| Source | What it provides |
-|--------|-----------------|
-| JARVIS-1 recipes (860 files) | Crafting/smelting recipes in vanilla Minecraft format |
-| minecraft-data package | Item properties, tool requirements, mob loot tables, item tags |
-| MineDojo wiki (6,738 pages) | Biome info for trees, mobs, ores |
-| JARVIS-1 memory.json | 188 baseline task plans |
-| Optimus-1 experience pool | 937 alternative plan variants |
+SR = success rate. AS = average steps to completion over successful runs. Optimus-1 numbers from [Li et al. 2024](https://arxiv.org/abs/2408.03615), Table 1. Ours: n=1 per task.
 
-## Related Papers
+**Architectural takeaway:** On every tier where Optimus-1's published SR is below 50% (Iron, Golden, Redstone), our combined retrieval + verifier-driven state substantially improves the success rate.
 
-- JARVIS-1 (Wang et al., 2023) — Base agent framework
-- Optimus-1 (Li et al., 2024) — Hybrid multimodal memory, NeurIPS 2024
-- HYMEM (Anonymous) — Graph-based hybrid memory for GUI agents
-- Planner Matters (Wu et al., 2026) — Planner-centric multi-agent framework
+**Honest limitations:** n=1 sampling per task (multi-seed evaluation is future work); Iron-tier step count exceeds baseline due to multi-cell craft retry storms in the JARVIS-1 craft helper, orthogonal to the framework contribution (see Appendix F.5).
+
+---
+
+## Acknowledgements
+
+This work builds on:
+- [Optimus-1](https://arxiv.org/abs/2408.03615) (Li et al., NeurIPS 2024) — the upstream codebase
+- [STEVE-1](https://arxiv.org/abs/2306.00937) (Lifshitz et al., NeurIPS 2023) — the visuomotor actor
+- [JARVIS-1](https://arxiv.org/abs/2311.05997) (Wang et al., TPAMI 2024) — the craft helper lineage
+- [MineRL](https://minerl.io) and [MineDojo](https://minedojo.org) — Minecraft simulation
+- [MrSteve](https://arxiv.org/abs/2411.06736) (Park et al., ICLR 2025) — framing of the STEVE-1 spatial blindness problem
+
+---
+
+## Citation
+
+```
+Salvi, A. et al. StructAgent: A Controllable Causal System for Self-Improving CUAs.
+NeurIPS 2026 submission, under review.
+```
+
+---
+
+## License
+
+This project inherits the license terms of upstream Optimus-1. See `LICENSE` for details.

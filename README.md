@@ -165,8 +165,7 @@ This work builds on:
 ## Citation
 
 ```
-Salvi, A. et al. StructAgent: A Controllable Causal System for Self-Improving CUAs.
-NeurIPS 2026 submission, under review.
+
 ```
 
 ---

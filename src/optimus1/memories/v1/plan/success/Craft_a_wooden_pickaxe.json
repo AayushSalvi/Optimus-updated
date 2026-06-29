@@ -1,0 +1,238 @@
+{
+  "plan": [
+    {
+      "id": "SA4niRsoE79RW9CNBeawPo",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "wooden pickaxe",
+      "video": "videos/v1/Craft_a_wooden_pickaxe/success/20860_2026_04_25_18_00_20.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            9
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 893
+    },
+    {
+      "id": "Cw8NBmXVnsucMWYKcfExAY",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "wooden pickaxe",
+      "video": "videos/v1/Craft_a_wooden_pickaxe/success/9d07c_2026_06_15_20_26_13.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            9
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1270,
+      "saved_at": "2026-06-15T20:26:20Z"
+    },
+    {
+      "id": "LkLcBgFue7QVnWzYEGx7jn",
+      "environment": "hills with trees and water",
+      "visual_info": "health bar: full  \nfood bar: full  \nhotbar: empty  \nenvironment: hills with trees and water",
+      "goal": "wooden pickaxe",
+      "video": "videos/v1/Craft_a_wooden_pickaxe/success/ca26f_2026_06_18_01_51_42.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            9
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1373,
+      "saved_at": "2026-06-18T01:51:49Z"
+    },
+    {
+      "id": "f4WXKCcuHvtdSNKUjfoC2F",
+      "environment": "forest",
+      "visual_info": "health bar: full  \nfood bar: full  \nhotbar: empty  \nenvironment: forest",
+      "goal": "wooden pickaxe",
+      "video": "videos/v1/Craft_a_wooden_pickaxe/success/59d39_2026_06_18_01_54_52.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            9
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1811,
+      "saved_at": "2026-06-18T01:55:02Z"
+    },
+    {
+      "id": "9FV8cvfChvzp3vDKzBaNr3",
+      "environment": "forest by a river",
+      "visual_info": "health bar: full  \nfood bar: full  \nhotbar: empty  \nenvironment: forest by a river",
+      "goal": "wooden pickaxe",
+      "video": "videos/v1/Craft_a_wooden_pickaxe/success/7c022_2026_06_18_01_59_12.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            9
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1820,
+      "saved_at": "2026-06-18T01:59:22Z"
+    }
+  ]
+}

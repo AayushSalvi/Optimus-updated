@@ -1,0 +1,76 @@
+{
+  "plan": [
+    {
+      "id": "aXasXcvYC3ecsrCoDFLxxg",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "axe",
+      "video": "videos/v1/chop_a_tree/success/ad166_2026_04_18_01_35_39.mp4",
+      "planning": [
+        {
+          "task": "chop trees",
+          "goal": [
+            "logs",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 87
+    },
+    {
+      "id": "9ZuzjxTju6HdeAGgE3x69Q",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "axe",
+      "video": "videos/v1/chop_a_tree/success/8bd65_2026_04_22_01_51_18.mp4",
+      "planning": [
+        {
+          "task": "chop trees",
+          "goal": [
+            "logs",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 122
+    },
+    {
+      "id": "5g2kkZPviH2jsMTmqFaXWx",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "axe",
+      "video": "videos/v1/chop_a_tree/success/9c55a_2026_04_23_23_26_21.mp4",
+      "planning": [
+        {
+          "task": "chop trees",
+          "goal": [
+            "logs",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 291
+    },
+    {
+      "id": "cSKECLqKqC7wdsZsnvShxC",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "axe",
+      "video": "videos/v1/chop_a_tree/success/91e40_2026_04_25_18_23_18.mp4",
+      "planning": [
+        {
+          "task": "chop trees",
+          "goal": [
+            "logs",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 96
+    }
+  ]
+}

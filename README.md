@@ -63,29 +63,3 @@ bash scripts/diamond.sh
 ```
 
 
-## :balloon: Optimus-1 Framework
-We divide the structure of Optimus-1 into Knowledge-Guided Planner, Experience-Driven Reflector, and Action Controller. In a given game environment with a long-horizon task, the Knowledge-Guided Planner senses the environment, retrieves knowledge from HDKG, and decomposes the task into executable sub-goals. The action controller then sequentially executes these sub-goals. During execution, the Experience-Driven Reflector is activated periodically, leveraging historical experience from AMEP to assess whether Optimus-1 can complete the current sub-goal. If not, it instructs the Knowledge-Guided Planner to revise its plan. Through iterative interaction with the environment,Optimus-1 ultimately completes the task.
-<img src="./assets/fig2.png" >
-
-## :smile_cat: Evaluation results
-We report the `average success rate (SR)`, `average number of steps (AS)`, and `average time (AT)` on each task group, the results of each task can be found in the Appendix experiment. Lower AS and AT metrics mean that the agent is more efficient at completing the task, while $∞$ indicates that the agent is unable to complete the task. Overall represents the average result on the five groups of Iron, Gold, Diamond, Redstone, and Armor.
-<img src="./assets/table1.png" >
-
-## :hugs: Citation
-
-If you find this work useful for your research, please kindly cite our paper:
-
-```
-@article{li2025optimus,
-  title={Optimus-1: Hybrid multimodal memory empowered agents excel in long-horizon tasks},
-  author={Li, Zaijing and Xie, Yuquan and Shao, Rui and Chen, Gongwei and Jiang, Dongmei and Nie, Liqiang},
-  journal={Advances in neural information processing systems},
-  volume={37},
-  pages={49881--49913},
-  year={2025}
-}
-```
-
-## Acknowledgement
-- Thanks for these awesome minecraft agents: [VPT](https://arxiv.org/abs/2206.11795), [Voyager](https://arxiv.org/abs/2306.00937), [STEVE-1](https://arxiv.org/abs/2306.00937), [Jarvis-1](https://arxiv.org/abs/2311.05997), etc. Our journey in developing open-world agents began with them.
-- Thanks Xinyi Wang for her constructive comments.

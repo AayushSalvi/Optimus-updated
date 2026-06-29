@@ -1,0 +1,16 @@
+{
+  "forest": {
+    "done": [],
+    "continue": [
+      [
+        "obtain logs_forest_continue_old_RfWyVcDTefvAXAFK6EGLWC.jpg",
+        "obtain logs_forest_continue_new_RfWyVcDTefvAXAFK6EGLWC.jpg"
+      ],
+      [
+        "obtain logs_forest_continue_old_L9mdVmajL4CqVnxUAnDULp.jpg",
+        "obtain logs_forest_continue_new_L9mdVmajL4CqVnxUAnDULp.jpg"
+      ]
+    ],
+    "replan": []
+  }
+}

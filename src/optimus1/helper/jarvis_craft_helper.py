@@ -200,8 +200,20 @@ class CraftHelper:
         if self.info["isGuiOpen"]:
             self._call_func("inventory")
         self.open_inventory_wo_recipe()
-        labels = self.get_labels()
-        inventory_id = self.find_in_inventory(labels, "crafting_table")
+        # [TABLE-POLL FIX] The crafting_table presence check previously asserted
+        # on a single, possibly-stale inventory snapshot. A transient frame where
+        # the table was mid-transit produced a false "missing crafting_table",
+        # which triggered a replan; the planner then added a redundant craft-table
+        # step, which consumed planks, which produced the next false "missing
+        # planks" — a self-reinforcing replan cascade (observed table count 1->6).
+        # Poll with fresh observations before concluding the table is absent.
+        inventory_id = None
+        for _poll in range(4):
+            labels = self.get_labels()  # get_labels() issues a null-action refresh
+            inventory_id = self.find_in_inventory(labels, "crafting_table")
+            if inventory_id:
+                break
+            self._null_action(2)
         self._assert(inventory_id, MISSING_MATERIAL_FORMAT.format("crafting_table", 1))
         self.has_crafting_table = True
         _invenotry_id = int(inventory_id.split("_")[-1])
@@ -335,18 +347,16 @@ class CraftHelper:
             self.move_once(d1, d2)
 
     def random_move_or_stay(self):
-        if np.random.uniform(0, 1) > 0.5:
-            num_random = random.randint(2, 4)
-            if random.uniform(0, 1) > 0.25:
-                for i in range(num_random):
-                    self.move_once(0, 0)
-            else:
-                for i in range(num_random):
-                    d1 = random.uniform(-5, 5)
-                    d2 = random.uniform(-5, 5)
-                    self.move_once(d1, d2)
-        else:
-            pass
+        # [CURSOR FIX] The random jitter branch (move_once with random d1,d2)
+        # desynced self.cursor from the true on-screen cursor position, causing
+        # placement clicks into far grid cells (resource_4, resource_7) to miss
+        # entirely (measured: delta=0 on multi-cell recipes, while resource_0
+        # placements succeeded). Multi-cell shaped recipes (stone_pickaxe,
+        # stone_axe) therefore never formed a valid grid. Replaced jitter with
+        # neutral no-op steps so cursor tracking stays accurate across cells.
+        num_random = random.randint(2, 4)
+        for i in range(num_random):
+            self.move_once(0, 0)
 
     def move_once(self, x: float, y: float):
         action = self.env.noop_action()
@@ -358,7 +368,25 @@ class CraftHelper:
     def move_to_slot(self, SLOT_POS: Dict, slot: str):
         self._assert(slot in SLOT_POS, f"Error: slot: {slot}")
         x, y = SLOT_POS[slot]
+        # [CURSOR FIX 2] Accumulated cursor drift (rounding in move_to_pos per-step
+        # division, plus desync across null-actions / file I/O during tag lookups)
+        # caused the SECOND placement in a multi-cell sequence to miss even cell
+        # resource_0 (measured delta=0). Recenter to a known origin before every
+        # slot move so each move is computed from an accurate position and drift
+        # cannot accumulate across placements.
+        self._recenter_cursor()
         self.move_to_pos(x, y)
+
+    def _recenter_cursor(self):
+        # Drive the cursor hard toward top-left past the corner (clamps at screen
+        # edge), then declare that the known origin. This resyncs tracked position
+        # with the true on-screen position regardless of prior drift.
+        big = 2000
+        for _ in range(6):
+            action = self.env.noop_action()
+            action["camera"] = np.array([-big * CAMERA_SCALER, -big * CAMERA_SCALER])
+            self.obs, _, _, self.info = self._step(action)
+        self.cursor = [0, 0]
 
     # pull
     # select item_from, select item_to
@@ -387,21 +415,81 @@ class CraftHelper:
         self._select_item()
 
     # select item_from, use n item_to
+    def _inv_count(self, type_name):
+        try:
+            self._null_action(1)
+        except Exception:
+            pass
+        n = 0
+        for _sid, _slot in self.info.get("plain_inventory", {}).items():
+            if isinstance(_slot, dict) and _slot.get("type") == type_name:
+                n += _slot.get("quantity", 0)
+        return n
+
     def pull_item(
         self, SLOT_POS: Dict, item_from: str, item_to: str, target_number: int
     ) -> None:
+        import sys
+        print(f"[PULL] from={item_from} to={item_to} n={target_number} "
+              f"grid_now={ {k:(v.get('type') if isinstance(v,dict) else v) for k,v in self.resource_record.items() if (v.get('type') if isinstance(v,dict) else v)!='none'} }",
+              file=sys.stderr, flush=True)
+        _moved_item = None
         if "resource" in item_to:
-            item = self.info["plain_inventory"][int(item_from.split("_")[-1])]
+            _from_idx = int(item_from.split("_")[-1])
+            item = self.info["plain_inventory"][_from_idx]
             self.resource_record[item_to] = item
-        self.move_to_slot(SLOT_POS, item_from)
-        self._null_action(1)
-        self._select_item()
-        self.move_to_slot(SLOT_POS, item_to)
-        self._null_action(1)
-        for i in range(target_number):
-            self._use_item()
+            _moved_item = item.get("type") if isinstance(item, dict) else None
+            import sys
+            _slotmap = {sid: s.get("type") for sid, s in self.info.get("plain_inventory", {}).items() if isinstance(s, dict) and s.get("type") not in (None, "none")}
+            print(f"[SLOT-CHECK] pulling from {item_from} (idx {_from_idx}) which holds {item.get('type') if isinstance(item,dict) else item!r} qty={item.get('quantity') if isinstance(item,dict) else '?'} | full_slotmap={_slotmap}", file=sys.stderr, flush=True)
+        import sys
+        # [VERIFY-RETRY FIX] The helper is "blind" — it cannot read the crafting
+        # grid, only the 36 main-inventory slots, and it cannot see the true
+        # cursor position. Cursor drift on longer moves (esp. to the center cell
+        # resource_4) made placement clicks miss, depositing nothing (measured:
+        # delta=0). Previously this went undetected and the craft silently failed.
+        # Fix: after each placement attempt, verify via inventory delta that the
+        # item actually left the bag; if not (click missed), recenter and retry
+        # the SAME cell. This makes cursor accuracy irrelevant — a missed click
+        # is simply retried. Only applies to grid placements where delta is
+        # measurable; capped so an impossible placement fails cleanly.
+        if _moved_item is not None:
+            _placed = False
+            for _try in range(5):
+                _before = self._inv_count(_moved_item)
+                self.move_to_slot(SLOT_POS, item_from)
+                self._null_action(1)
+                self._select_item()
+                self.move_to_slot(SLOT_POS, item_to)
+                self._null_action(1)
+                for i in range(target_number):
+                    self._use_item()
+                    self._null_action(1)
+                _after = self._inv_count(_moved_item)
+                if _before - _after > 0:
+                    _placed = True
+                    if _try > 0:
+                        print(f"[VERIFY-RETRY] {_moved_item} -> {item_to} landed on attempt {_try+1} (delta={_before-_after})", file=sys.stderr, flush=True)
+                    break
+                else:
+                    print(f"[VERIFY-RETRY] {_moved_item} -> {item_to} MISSED (attempt {_try+1}, delta=0), recentering and retrying", file=sys.stderr, flush=True)
+                    self._recenter_cursor()
+            if not _placed:
+                print(f"[VERIFY-RETRY] {_moved_item} -> {item_to} FAILED after 5 attempts; placement unreliable", file=sys.stderr, flush=True)
+            self.random_move_or_stay()
+        else:
+            # non-grid placement (no measurable delta): original behavior
+            self.move_to_slot(SLOT_POS, item_from)
             self._null_action(1)
-        self.random_move_or_stay()
+            self._select_item()
+            self.move_to_slot(SLOT_POS, item_to)
+            self._null_action(1)
+            for i in range(target_number):
+                self._use_item()
+                self._null_action(1)
+            self.random_move_or_stay()
+        _after = self._inv_count(_moved_item) if _moved_item else -1
+        print(f"[INV-DELTA pull_item] item={_moved_item!r} to={item_to} n={target_number} inv_before={_before} inv_after={_after} delta={_before-_after if _before>=0 else 'NA'}", file=sys.stderr, flush=True)
 
     # use n item_to
     def pull_item_continue(
@@ -459,6 +547,33 @@ class CraftHelper:
         return result
 
     # crafting
+    def _count_in_inventory(self, target):
+        """Count total quantity of `target` across inventory AND resource grid slots.
+
+        Two changes from earlier version:
+          1. Forces a fresh env observation via _null_action(1) before reading,
+             so we don't see stale self.info from before the last pull operation.
+          2. Counts items still in the crafting grid (resource_0..resource_8) in
+             addition to plain_inventory. Items can be mid-transit during the
+             post-craft assertion window — counting both prevents false failures.
+        """
+        # Refresh observation so plain_inventory reflects post-craft state
+        try:
+            self._null_action(1)
+        except Exception:
+            pass
+        total = 0
+        inv = self.info.get("plain_inventory", {})
+        for slot_id, slot in inv.items():
+            if isinstance(slot, dict) and slot.get("type") == target:
+                total += slot.get("quantity", 0)
+        # Also count items still sitting in resource_X grid slots
+        rec = getattr(self, "resource_record", {}) or {}
+        for slot_id, slot in rec.items():
+            if isinstance(slot, dict) and slot.get("type") == target:
+                total += slot.get("quantity", 0)
+        return total
+
     def crafting(self, target: str, target_num: int = 1):
         try:
             # is item/tag
@@ -494,25 +609,42 @@ class CraftHelper:
                             recipe_info = json.load(file)
                     need_table = self.crafting_type(recipe_info)
 
-                    # find materials(shapeless) like oak_planks
-                    ingredients = recipe_info.get("ingredients")
-                    random.shuffle(ingredients)
+                    # find materials — support shapeless (`ingredients`) and shaped (`pattern`+`key`) recipes
                     items = dict()
                     items_type = dict()
-
-                    # clculate the amount needed and store <item, quantity> in items
-                    for i in range(len(ingredients)):
-                        if ingredients[i].get("item"):
-                            item = ingredients[i].get("item")[10:]
-                            item_type = "item"
-                        else:
-                            item = ingredients[i].get("tag")[10:]
-                            item_type = "tag"
-                        items_type[item] = item_type
-                        if items.get(item):
-                            items[item] += 1
-                        else:
-                            items[item] = 1
+                    ingredients = recipe_info.get("ingredients")
+                    if ingredients is not None:
+                        # shapeless: list of {item|tag: ...}
+                        random.shuffle(ingredients)
+                        for ing in ingredients:
+                            if ing.get("item"):
+                                item = ing.get("item")[10:]
+                                item_type = "item"
+                            else:
+                                item = ing.get("tag")[10:]
+                                item_type = "tag"
+                            items_type[item] = item_type
+                            items[item] = items.get(item, 0) + 1
+                    else:
+                        # shaped: pattern is list of strings, key maps char -> {item|tag}
+                        pattern_rows = recipe_info.get("pattern", [])
+                        key = recipe_info.get("key", {})
+                        char_counts = {}
+                        for row in pattern_rows:
+                            for ch in row:
+                                if ch == " " or ch not in key:
+                                    continue
+                                char_counts[ch] = char_counts.get(ch, 0) + 1
+                        for ch, count in char_counts.items():
+                            spec = key[ch]
+                            if spec.get("item"):
+                                item = spec.get("item")[10:]
+                                item_type = "item"
+                            else:
+                                item = spec.get("tag")[10:]
+                                item_type = "tag"
+                            items_type[item] = item_type
+                            items[item] = items.get(item, 0) + count
 
                     if recipe_info.get("result").get("count"):
                         iter_num = math.ceil(
@@ -522,6 +654,9 @@ class CraftHelper:
                         iter_num = target_num
 
                     enough_material_subtarget = True
+                    if subtarget == "birch_planks":
+                        _labels = self.get_labels()
+                        _inv = {k:v for k,v in _labels.items() if v.get("type","air") != "air"} if isinstance(list(_labels.values())[0], dict) else _labels
                     for item, num_need in items.items():
                         labels = self.get_labels()
                         inventory_id = self.find_in_inventory(
@@ -530,7 +665,9 @@ class CraftHelper:
                         if not inventory_id:
                             enough_material_subtarget = False
                             break
-                        inventory_num = labels.get(inventory_id).get("quantity")
+                        if isinstance(inventory_id, list):
+                            inventory_id = inventory_id[0]
+                        inventory_num = labels.get(inventory_id, {}).get("quantity", 0)
                         if num_need * iter_num > inventory_num:
                             enough_material_subtarget = False
                             break
@@ -567,6 +704,8 @@ class CraftHelper:
 
             need_table = self.crafting_type(recipe_info)
 
+            # Cache inventory before opening GUI (inventory becomes unreadable during GUI)
+            self._cached_labels = self.get_labels()
             if need_table:
                 self.open_crating_table_wo_recipe()
             else:
@@ -651,42 +790,33 @@ class CraftHelper:
     def find_in_inventory(
         self, labels: Dict, item: str, item_type: str = "item", path=None
     ):
-        if path == None:
-            path = []
-        for key, value in labels.items():
-            current_path = path + [key]
-            if item_type == "item":
-                if re.match(item, str(value)):
-                    return current_path
-                elif isinstance(value, dict):
-                    result = self.find_in_inventory(
-                        value, item, item_type, current_path
-                    )
-                    if result is not None:
-                        return result[0]
-            elif item_type == "tag":
-                # tag info
-                relative_path = os.path.join("tag_items.json")
-                tag_json_path = os.path.join(self.root_path, relative_path)
-                with open(tag_json_path) as file:
-                    self.tag_info = json.load(file)
-
-                item_list = self.tag_info["minecraft:" + item]
-                for i in range(len(item_list)):
-                    if re.match(item_list[i][10:], str(value)):
-                        return current_path
-                    elif isinstance(value, dict):
-                        result = self.find_in_inventory(
-                            value, item, item_type, current_path
-                        )
-                        if result is not None:
-                            return result[0]
+        """Find a slot in the flat labels dict containing the given item or any item in the given tag.
+        Returns the slot key (e.g. 'inventory_0') or None.
+        """
+        if item_type == "item":
+            for key, value in labels.items():
+                if re.search(item, str(value)):
+                    return key
+            return None
+        elif item_type == "tag":
+            relative_path = os.path.join("tag_items.json")
+            tag_json_path = os.path.join(self.root_path, relative_path)
+            with open(tag_json_path) as file:
+                self.tag_info = json.load(file)
+            item_list = self.tag_info["minecraft:" + item]
+            # Try each variant in the tag against each slot
+            for key, value in labels.items():
+                for variant in item_list:
+                    variant_name = variant[10:]  # strip "minecraft:"
+                    if re.search(variant_name, str(value)):
+                        return key
+            return None
         return None
-
     # crafting once
     def crafting_once(
         self, target: str, iter_num: int, recipe_info: Dict, target_num: int
     ):
+        self._pre_craft_count = self._count_in_inventory(target)
         # shaped crafting
         if "pattern" in recipe_info:
             self.crafting_shaped(target, iter_num, recipe_info)
@@ -695,6 +825,22 @@ class CraftHelper:
             self.crafting_shapeless(target, iter_num, recipe_info)
 
         # get result
+        # [RESULT-WAIT FIX] Poll result_0 before extraction; the game may take
+        # a few ticks to populate the output slot. Logs result_0 to distinguish
+        # a timing race (fills late) from recipe-not-recognized (never fills).
+        import sys as _sys
+        _result_seen = False
+        for _attempt in range(12):
+            _lab = self.get_labels()
+            _r0 = _lab.get("result_0")
+            _r0type = (_r0.get("type") if isinstance(_r0, dict) else _r0)
+            pass
+            if isinstance(_r0, dict) and _r0.get("type") not in (None, "none") and _r0.get("quantity", 0) > 0:
+                _result_seen = True
+                break
+            self._null_action(2)
+        if not _result_seen:
+            pass
         # Do not put the result in resource
         labels = self.get_labels()
         for i in range(9):
@@ -716,8 +862,7 @@ class CraftHelper:
                     self._assert(result_inventory_id_2, f"no space to place result")
                     self.pull_item_return(self.crafting_slotpos, result_inventory_id_2)
                     self._assert(
-                        self.get_labels().get(result_inventory_id_2).get("type")
-                        == target,
+                        self._count_in_inventory(target) >= self._pre_craft_count + target_num,
                         f"fail for unkown reason",
                     )
             else:
@@ -727,7 +872,7 @@ class CraftHelper:
                     self.crafting_slotpos, "result_0", result_inventory_id_2, iter_num
                 )
                 self._assert(
-                    self.get_labels().get(result_inventory_id_2).get("type") == target,
+                    self._count_in_inventory(target) >= self._pre_craft_count + target_num,
                     f"fail for unkown reason",
                 )
         else:
@@ -737,7 +882,7 @@ class CraftHelper:
                 self.crafting_slotpos, "result_0", result_inventory_id_2, iter_num
             )
             self._assert(
-                self.get_labels().get(result_inventory_id_2).get("type") == target,
+                self._count_in_inventory(target) >= self._pre_craft_count + target_num,
                 f"fail for unkown reason",
             )
 
@@ -752,7 +897,20 @@ class CraftHelper:
         labels = self.get_labels()
         pattern = recipe_info.get("pattern")
         items = recipe_info.get("key")
-        items = random_dic(items)
+        # [BUG 2 FIX] Place item-typed ingredients (sticks, ingots) before
+        # tag-typed ingredients (planks). Tag-typed primary materials like
+        # planks accidentally match partial recipes (oak_button, slabs) when
+        # placed alone, causing the wrong item to appear in result_0 and the
+        # craft to fail. Item-typed ingredients alone don't match any recipe,
+        # so placing them first means the partial state in the grid never
+        # triggers an unintended recipe match.
+        items = dict(sorted(
+            items.items(),
+            key=lambda kv: (
+                0 if "item" in kv[1] else 1,  # item-typed first
+                kv[0],                          # then by key letter for stable order
+            ),
+        ))
         # place each item in order
         for k, v in items.items():
             signal = k
@@ -773,6 +931,7 @@ class CraftHelper:
             num_need = num_need * iter_num
             inventory_id = self.find_in_inventory(labels, item, item_type)
             self._assert(inventory_id, MISSING_MATERIAL_FORMAT.format(item, num_need))
+            import sys; print(f"[DEBUG SHAPED] item={item}, type={item_type}, inventory_id={inventory_id!r}, labels.get(id)={labels.get(inventory_id)!r}, label_keys={list(labels.keys())[:10]}", file=sys.stderr, flush=True)
             inventory_num = labels.get(inventory_id).get("quantity")
             self._assert(
                 num_need <= inventory_num,
@@ -785,6 +944,7 @@ class CraftHelper:
                 type = 3
             else:
                 type = 2
+            import sys; print(f"[GUI-DIAG] target_signal={signal!r} current_gui_type={self.current_gui_type!r} computed_type={type} pattern={pattern!r} isGuiOpen={self.info.get('isGuiOpen')} crafting_slotpos={self.crafting_slotpos!r}", file=sys.stderr, flush=True)
             for i in range(len(pattern)):
                 resource_idx = i * type
                 for j in range(len(pattern[i])):
@@ -842,6 +1002,7 @@ class CraftHelper:
             self._assert(
                 inventory_id, MISSING_MATERIAL_FORMAT.format(item, num_need * iter_num)
             )
+            import sys; print(f"[DEBUG SHAPED] item={item}, type={item_type}, inventory_id={inventory_id!r}, labels.get(id)={labels.get(inventory_id)!r}, label_keys={list(labels.keys())[:10]}", file=sys.stderr, flush=True)
             inventory_num = labels.get(inventory_id).get("quantity")
             self._assert(
                 num_need * iter_num <= inventory_num,

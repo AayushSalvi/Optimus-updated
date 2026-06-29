@@ -1,0 +1,65 @@
+{
+  "plan": [
+    {
+      "id": "RePTriBermCL8eGuAX4bv3",
+      "environment": "sky/overworld edge",
+      "visual_info": "health bar: full  \nfood bar: full  \nhotbar: empty  \nenvironment: sky/overworld edge",
+      "goal": "furnace",
+      "video": "videos/v1/Craft_a_furnace/success/d8c4c_2026_06_18_07_55_33.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            4
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            12
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "mine cobblestone",
+          "goal": [
+            "cobblestone",
+            8
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5140,
+      "saved_at": "2026-06-18T07:56:05Z"
+    }
+  ]
+}

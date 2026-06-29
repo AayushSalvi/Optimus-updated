@@ -1,0 +1,34 @@
+{
+  "ocean": {
+    "done": [],
+    "continue": [],
+    "replan": [
+      [
+        "mine coal ore_ocean_replan_old_M6jg4mL5ADQbi4knK8UAid.jpg",
+        "mine coal ore_ocean_replan_new_M6jg4mL5ADQbi4knK8UAid.jpg"
+      ],
+      [
+        "mine coal ore_ocean_replan_old_7CbP9qZbdVPXTKzKRGZPHM.jpg",
+        "mine coal ore_ocean_replan_new_7CbP9qZbdVPXTKzKRGZPHM.jpg"
+      ]
+    ]
+  },
+  "forest": {
+    "done": [],
+    "continue": [
+      [
+        "mine coal ore_forest_continue_old_8f9jFpvNksUSo75t2m3zzc.jpg",
+        "mine coal ore_forest_continue_new_8f9jFpvNksUSo75t2m3zzc.jpg"
+      ],
+      [
+        "mine coal ore_forest_continue_old_3mtNUaTVZjwEadV87yEjtJ.jpg",
+        "mine coal ore_forest_continue_new_3mtNUaTVZjwEadV87yEjtJ.jpg"
+      ],
+      [
+        "mine coal ore_forest_continue_old_c2nT69rjwHwautURBbfgJH.jpg",
+        "mine coal ore_forest_continue_new_c2nT69rjwHwautURBbfgJH.jpg"
+      ]
+    ],
+    "replan": []
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "plan": [
+    {
+      "id": "mSrt2Y7abHq3FFZSgCrUB2",
+      "environment": "plains",
+      "visual_info": "health bar: full  \nfood bar: full  \nhotbar: contains cobblestone  \nenvironment: plains",
+      "goal": "stone pickaxe",
+      "video": "videos/v1/Craft_a_stone_pickaxe/success/098c6_2026_06_19_23_27_12.mp4",
+      "planning": [
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 431,
+      "saved_at": "2026-06-19T23:27:14Z"
+    },
+    {
+      "id": "YWqg8txxaCPPAWy56J992o",
+      "environment": "forest near water",
+      "visual_info": "health bar: full  \nfood bar: full  \nhotbar: cobblestone and wooden planks  \nenvironment: forest near water",
+      "goal": "stone pickaxe",
+      "video": "videos/v1/Craft_a_stone_pickaxe/success/b28e2_2026_06_19_23_29_37.mp4",
+      "planning": [
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 534,
+      "saved_at": "2026-06-19T23:29:39Z"
+    },
+    {
+      "id": "a96cd4cdCZPV3r3wEFsnGH",
+      "environment": "grassy plains with trees and sheep nearby",
+      "visual_info": "health bar: full  \nfood bar: full  \nhotbar: contains cobblestone and other items  \nenvironment: grassy plains with trees and sheep nearby",
+      "goal": "stone pickaxe",
+      "video": "videos/v1/Craft_a_stone_pickaxe/success/bb8aa_2026_06_19_23_30_43.mp4",
+      "planning": [
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 425,
+      "saved_at": "2026-06-19T23:30:45Z"
+    },
+    {
+      "id": "3scWLa6ZZM8p3XnyB93NDV",
+      "environment": "cave or underground stone area",
+      "visual_info": "health bar: full  \nfood bar: full  \nhotbar: cobblestone, wooden pickaxe  \nenvironment: cave or underground stone area",
+      "goal": "stone pickaxe",
+      "video": "videos/v1/Craft_a_stone_pickaxe/success/94d0e_2026_06_19_23_31_55.mp4",
+      "planning": [
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 431,
+      "saved_at": "2026-06-19T23:31:57Z"
+    },
+    {
+      "id": "dYr2y5d8mFPeL7VmmdkigA",
+      "environment": "plains with a village nearby",
+      "visual_info": "health bar: full  \nfood bar: full  \nhotbar: cobblestone, one item  \nenvironment: plains with a village nearby",
+      "goal": "stone pickaxe",
+      "video": "videos/v1/Craft_a_stone_pickaxe/success/8e0cc_2026_06_20_01_18_42.mp4",
+      "planning": [
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 423,
+      "saved_at": "2026-06-20T01:18:44Z"
+    }
+  ]
+}

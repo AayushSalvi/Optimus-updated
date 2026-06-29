@@ -1,0 +1,41 @@
+{
+  "missing material: {\"axe equipped\": 1}": [
+    [
+      {
+        "task": "chop tree",
+        "goal": [
+          "logs",
+          2
+        ]
+      },
+      {
+        "task": "craft planks",
+        "goal": [
+          "planks",
+          8
+        ]
+      },
+      {
+        "task": "craft sticks",
+        "goal": [
+          "sticks",
+          2
+        ]
+      },
+      {
+        "task": "craft wooden_axe",
+        "goal": [
+          "wooden_axe",
+          1
+        ]
+      },
+      {
+        "task": "equip axe",
+        "goal": [
+          "axe equipped",
+          1
+        ]
+      }
+    ]
+  ]
+}

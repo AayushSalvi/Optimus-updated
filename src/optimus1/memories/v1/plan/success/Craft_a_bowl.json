@@ -1,0 +1,200 @@
+{
+  "plan": [
+    {
+      "id": "DoU77SQxLik5KxxMDLe3qj",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "bowl",
+      "video": "videos/v1/Craft_a_bowl/success/4fdfd_2026_04_22_00_11_34.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            2
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft bowl",
+          "goal": [
+            "bowl",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 756
+    },
+    {
+      "id": "Wx4ttXT6JHQvWXqxAc7tAo",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "bowl",
+      "video": "videos/v1/Craft_a_bowl/success/e0a12_2026_04_22_01_46_55.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            2
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft bowl",
+          "goal": [
+            "bowl",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1965
+    },
+    {
+      "id": "3B5AG7KMs4zzKoPRWVBwRC",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "bowl",
+      "video": "videos/v1/Craft_a_bowl/success/e1ca3_2026_04_23_23_18_55.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            2
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft bowl",
+          "goal": [
+            "bowl",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 932
+    },
+    {
+      "id": "3icM95WHusnn6jsNtDNgZj",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "bowl",
+      "video": "videos/v1/Craft_a_bowl/success/9e2fb_2026_04_25_18_19_37.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            2
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft bowl",
+          "goal": [
+            "bowl",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1923
+    },
+    {
+      "id": "JB4TbWLr4jwHZfSrqb5vmA",
+      "environment": "birch forest",
+      "visual_info": "health bar: full  \nfood bar: full  \nhotbar: empty  \nenvironment: birch forest",
+      "goal": "wood planks",
+      "video": "videos/v1/Craft_a_bowl/success/3a30c_2026_06_18_03_19_58.mp4",
+      "planning": [
+        {
+          "task": "mine logs",
+          "goal": [
+            "logs",
+            2
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft bowl",
+          "goal": [
+            "bowl",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 2088,
+      "saved_at": "2026-06-18T03:20:13Z"
+    }
+  ]
+}

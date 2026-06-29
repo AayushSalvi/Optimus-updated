@@ -63,6 +63,24 @@ def get_info_from_plan(data):
     return goal, visual_info, env
 
 
+
+# === Progress Ledger imports ===
+from optimus1.progress_ledger import (
+    init_ledger as _ledger_init,
+    detect_key_nodes as _ledger_detect,
+    compute_world_delta as _ledger_compute_delta,
+    StepRecord as _LedgerStepRecord,
+    make_call_llm as _ledger_make_call_llm,
+)
+_LEDGER_CALL_LLM = None
+def _ledger_get_call_llm():
+    global _LEDGER_CALL_LLM
+    if _LEDGER_CALL_LLM is None:
+        _LEDGER_CALL_LLM = _ledger_make_call_llm()
+    return _LEDGER_CALL_LLM
+# === End Progress Ledger imports ===
+
+
 def agent_do(
     cfg: DictConfig,
     env: CustomEnvWrapper,
@@ -71,6 +89,7 @@ def agent_do(
     planning: PlanList,
     reset_obs: Dict[str, Any],
     memory_bank: Memory,
+    ledger=None,
 ):
     helper = Helper(env)
     obs = reset_obs
@@ -91,8 +110,22 @@ def agent_do(
 
         plan_manager = PlanManager(planning)
         current_plan = plan_manager.next_plan
+        # [SPATIAL MEMORY] persistent store of where resources are found (Component 1)
+        from optimus1.spatial_memory import SpatialMemory
+        spatial = SpatialMemory()
+        try:
+            spatial.set_episode(str(final_goal))
+        except Exception:
+            spatial.set_episode("unknown")
+        # [STAGNATION GUARD] detect wander stalls during gathering (Component 3)
+        from optimus1.stagnation_guard import StagnationGuard
+        stagnation = StagnationGuard()
 
         while current_plan is not None:
+            # [LEDGER] snapshot inventory + position before this sub-task
+            _ledger_pre_inv = dict(env.status_mod.inventory) if (ledger is not None and hasattr(env, "status_mod")) else {}
+            _ledger_pre_loc = dict(env.status_mod.location_stats) if (ledger is not None and hasattr(env, "status_mod")) else {}
+            _ledger_pre_equip = env.status_mod.equipment if (ledger is not None and hasattr(env, "status_mod")) else "none"
             task, goal = current_plan["task"], current_plan["goal"]
             if goal[0] == "log":
                 goal[0] = "logs"
@@ -126,6 +159,39 @@ def agent_do(
                     logger.info(f"[green]{task} Success[/green]!")
                     progress += 1
                     pbar.update(all_task, advance=1)
+                    # [LEDGER] update on craft/smelt/equip success
+                    if ledger is not None:
+                        try:
+                            _post_inv = dict(env.status_mod.inventory)
+                            _post_loc = dict(env.status_mod.location_stats)
+                            _post_equip = env.status_mod.equipment
+                            _delta = _ledger_compute_delta(
+                                inv_before=_ledger_pre_inv,
+                                inv_after=_post_inv,
+                                loc_before=_ledger_pre_loc,
+                                loc_after=_post_loc,
+                                equipped_before=_ledger_pre_equip,
+                                equipped_after=_post_equip,
+                            )
+                            _states = {o.id: ledger.outcome_cache.get_state(o.id) for o in ledger.required_outcomes}
+                            _kns = _ledger_detect(
+                                step_idx=env.num_steps,
+                                required_outcomes=ledger.required_outcomes,
+                                current_outcome_states=_states,
+                                world_delta=_delta,
+                                actor_action_summary=f"completed sub-task: {task}",
+                                call_llm=_ledger_get_call_llm(),
+                            )
+                            _step_rec = _LedgerStepRecord(
+                                step_idx=env.num_steps,
+                                inventory=_post_inv,
+                                actor_action_summary=f"completed sub-task: {task}",
+                                key_nodes=_kns,
+                            )
+                            ledger.apply_step_keynodes(_step_rec)
+                            logger.info(f"[cyan][LEDGER] After {task!r}: pending={ledger.pending()}, all_done={ledger.all_done()}[/cyan]")
+                        except Exception as _e:
+                            logger.warning(f"[LEDGER] update failed: {_e}")
 
                 else:
                     assert (
@@ -151,6 +217,12 @@ def agent_do(
                         cg.append(memory_bank.retrieve_graph(item, num))
                     graph_summary = "\n".join(cg)
                     logger.info(f"Craft Graph: {graph_summary}")
+                    # [LEDGER] inject working-memory state into replan prompt
+                    if ledger is not None:
+                        try:
+                            graph_summary = (graph_summary or "") + "\n\n" + ledger.to_prompt_block()
+                        except Exception as _e:
+                            logger.warning(f"[LEDGER] inject into replan failed: {_e}")
                     replan = ServerAPI.get_plan(
                         cfg["server"], obs, task, info, examples, graph_summary
                     )
@@ -167,6 +239,13 @@ def agent_do(
                     env.save_video(task, "failed", True)
                     memory_bank.save_replan(task, info, new_planning)
             else:
+                # [STAGNATION GUARD] reset window for this gather sub-task
+                try:
+                    _tgt = goal[0]
+                    _tgt_now = env.status_mod.inventory.get(_tgt, 0) if hasattr(env, "status_mod") else 0
+                    stagnation.reset_for_task(_tgt, _tgt_now)
+                except Exception:
+                    pass
                 while True:
                     if "explore" in env.cache and env.cache["explore"] > 0:
                         task = f"explore to find {goal[0]}"
@@ -178,7 +257,35 @@ def agent_do(
                     action = ServerAPI.get_action(
                         cfg["server"], obs, task, step=env.num_steps
                     )
-                    obs, reward, game_over, info = env.step(action, goal)
+                    try:
+                        obs, reward, game_over, info = env.step(action, goal)
+                    except RuntimeError as _env_err:
+                        # [CRASH WRAPPER] MineRL raises "Attempted to step an
+                        # environment server with done=True" when the env dies
+                        # mid-task. Treat as terminal failure so the run records
+                        # a status instead of crashing to NO_OUTPUT.
+                        logger.warning(f"[red]Env terminated mid-step ({_env_err}); ending episode as failed.[/red]")
+                        game_over = True
+                        break
+                    # [SPATIAL MEMORY] record any resource obtained this step at current (x,y,z)
+                    try:
+                        if hasattr(env, "status_mod"):
+                            _rec = spatial.record_from_status(env.status_mod, step=env.num_steps)
+                            if _rec:
+                                logger.info(f"[blue][SPATIAL] recorded {_rec} @ {env.status_mod.get_position()}[/blue]")
+                    except Exception as _se:
+                        pass
+                    # [STAGNATION GUARD] if wandering in place without progress, trigger explore
+                    try:
+                        if hasattr(env, "status_mod"):
+                            _tgt = goal[0]
+                            _tgt_now = env.status_mod.inventory.get(_tgt, 0)
+                            _pos = env.status_mod.get_position()
+                            if stagnation.update(env.num_steps, _pos, _tgt_now):
+                                env.cache["explore"] = env.cache.get("explore", 0) + 200
+                                logger.warning(f"[red][STAGNATION] stuck on {_tgt} @ {_pos}; triggering explore (200 steps)[/red]")
+                    except Exception:
+                        pass
                     pbar.update(num_step, advance=1)
                     monitors.update(f"{task}_{progress}", env.current_task_finish)
 
@@ -255,9 +362,23 @@ def agent_do(
                 break
             current_plan = plan_manager.next_plan
 
+        # [SPATIAL MEMORY] persist the resource-location store after this task
+        try:
+            spatial.save()
+            logger.info(f"[blue][SPATIAL] saved store: {spatial.summary()}[/blue]")
+        except Exception:
+            pass
         if len(plan_manager.remain_plans) == 0 and not game_over:
-            logger.info("[green]All tasks are completed![/green]")
-            status = "success"
+            # [LABELING FIX] Plan exhaustion != goal satisfaction. Gate the
+            # success label on the progress ledger's verified-outcome check.
+            # Without this, a plan that ends early (e.g. iron task stopping at
+            # wooden_axe) is falsely logged as success.
+            if ledger is not None and not ledger.all_done():
+                logger.info(f"[red]Plan exhausted but goal NOT satisfied. Pending: {ledger.pending()}[/red]")
+                status = "failed"
+            else:
+                logger.info("[green]All tasks are completed![/green]")
+                status = "success"
         else:
             logger.info(
                 f"[red]Some tasks are not completed![/red] {plan_manager.remain_plans}"
@@ -296,6 +417,33 @@ def main(cfg: DictConfig):
             obs = env.reset()
             t.join()
 
+
+            # [LEDGER] initialize per-episode progress ledger
+            ledger = None
+            try:
+                _init_inv = dict(env.status_mod.inventory) if hasattr(env, "status_mod") else {}
+                _init_loc = env.status_mod.location_stats if hasattr(env, "status_mod") else {}
+                def _xyz(loc):
+                    if not loc:
+                        return (0.0, 64.0, 0.0)
+                    def _v(k):
+                        v = loc.get(k, 0.0)
+                        return float(v.item() if hasattr(v, "item") else v)
+                    return (_v("xpos"), _v("ypos"), _v("zpos"))
+                _init_pos = _xyz(_init_loc)
+                _init_equip = env.status_mod.equipment if hasattr(env, "status_mod") else "none"
+                ledger = _ledger_init(
+                    instruction=task,
+                    initial_inventory=_init_inv,
+                    initial_position=_init_pos,
+                    initial_dimension="overworld",
+                    initial_equipped=_init_equip,
+                    call_llm=_ledger_get_call_llm(),
+                )
+                logger.info(f"[cyan][LEDGER] Initialized for task={task!r}: outcomes={[o.id for o in ledger.required_outcomes]}[/cyan]")
+            except Exception as _e:
+                logger.warning(f"[LEDGER] init failed: {_e}")
+                ledger = None
             while True:
                 try:
                     retrieval_info = ServerAPI.get_retrieval(cfg["server"], obs, task)
@@ -315,8 +463,15 @@ def main(cfg: DictConfig):
                     logger.info(f"Graph: {graph}")
 
                     if not has_done:
+                        # [LEDGER] inject ledger block into initial planner's graph context
+                        _graph_with_ledger = graph
+                        if ledger is not None:
+                            try:
+                                _graph_with_ledger = (graph or "") + "\n\n" + ledger.to_prompt_block()
+                            except Exception as _e:
+                                logger.warning(f"[LEDGER] inject into initial plan failed: {_e}")
                         planning = ServerAPI.get_plan(
-                            cfg["server"], obs, task, None, example, graph, visual_info
+                            cfg["server"], obs, task, None, example, _graph_with_ledger, visual_info
                         )
                     else:
                         planning = example
@@ -328,6 +483,16 @@ def main(cfg: DictConfig):
                     break
 
             assert planning is not None, "Planning is None!"
+            # [CRAFT-TEST] when materials are preloaded (stone_crafttest config),
+            # skip gather/intermediate steps; go straight to the final craft.
+            try:
+                _preload = cfg["env"].get("initial_inventory", []) if hasattr(cfg["env"], "get") else cfg["env"]["initial_inventory"]
+                _preloaded_types = {str(it.get("type", "")) for it in _preload} if _preload else set()
+                if "cobblestone" in _preloaded_types:
+                    planning = [{"task": "craft stone_pickaxe", "goal": ["stone_pickaxe", 1]}]
+                    logger.info(f"[yellow][CRAFT-TEST] preloaded inventory detected {_preloaded_types}; overriding plan to single craft step[/yellow]")
+            except Exception as _e:
+                logger.warning(f"[CRAFT-TEST] override skipped: {_e}")
 
             logger.info(f"[yellow]Plan: {planning}[yellow]")
             # return
@@ -335,9 +500,47 @@ def main(cfg: DictConfig):
             current_monitos = Monitors([SuccessMonitor(), StepMonitor()])
             # try:
             status, steps, current_planning = agent_do(
-                cfg, env, logger, current_monitos, planning, obs, memory_bank
+                cfg, env, logger, current_monitos, planning, obs, memory_bank, ledger=ledger
             )
             video_file = env.save_video(task, status)
+
+            # [AMEP] Capture failure metadata when status == "failed"
+            #   Pulls from the ledger (pending outcomes) and current_monitos (which
+            #   sub-task failed and at what step count).
+            _amep_failure_metadata = None
+            if status == "failed":
+                try:
+                    _summary = current_monitos.get_metric() if current_monitos else {}
+                    # Find the last sub-task with SuccessMonitor=0 (or last entry if all succeeded)
+                    _failed_subtask = ""
+                    _failed_at_step = int(steps) if steps else 0
+                    if isinstance(_summary, dict):
+                        for sub_name, sub_metrics in _summary.items():
+                            if isinstance(sub_metrics, dict) and sub_metrics.get("SuccessMonitor") == 0:
+                                _failed_subtask = sub_name
+                                _step_val = sub_metrics.get("StepMonitor", 0)
+                                if isinstance(_step_val, (int, float)):
+                                    _failed_at_step = int(_step_val)
+                    _pending_outcomes = []
+                    if ledger is not None:
+                        try:
+                            _pending_outcomes = list(ledger.pending())
+                        except Exception:
+                            pass
+                    _amep_failure_metadata = {
+                        "failed_subtask": _failed_subtask,
+                        "failed_at_step": _failed_at_step,
+                        "pending_outcomes": _pending_outcomes,
+                        "last_error": "",  # could populate from a logged warning later
+                        "sub_task_summary": _summary if isinstance(_summary, dict) else {},
+                    }
+                    logger.info(
+                        f"[AMEP] Captured failure metadata: failed at {_failed_subtask!r} "
+                        f"(step {_failed_at_step}); pending outcomes: {_pending_outcomes}"
+                    )
+                except Exception as _e:
+                    logger.warning(f"[AMEP] failure metadata capture failed: {_e}")
+
             # * save planning
             t = memory_bank.save_plan(
                 task,
@@ -348,6 +551,7 @@ def main(cfg: DictConfig):
                 steps,
                 video_file,
                 environment=environment,
+                failure_metadata=_amep_failure_metadata,
             )
             # except Exception as e:
             #     logger.critical(f"Error: {e}")

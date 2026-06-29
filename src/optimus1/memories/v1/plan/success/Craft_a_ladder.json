@@ -1,0 +1,249 @@
+{
+  "plan": [
+    {
+      "id": "hMDoG22UkXwCQknAesX9bE",
+      "environment": "forest",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: forest",
+      "goal": "ladder",
+      "video": "videos/v1/Craft_a_ladder/success/b4065_2026_04_25_18_22_26.mp4",
+      "planning": [
+        {
+          "task": "chop trees",
+          "goal": [
+            "logs",
+            2
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft sticks",
+          "goal": [
+            "stick",
+            7
+          ]
+        },
+        {
+          "task": "craft crafting table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "chop tree",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            7
+          ]
+        },
+        {
+          "task": "craft ladder",
+          "goal": [
+            "ladder",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 2202
+    },
+    {
+      "id": "DzpdYWN8Aiq92grUn3pg4C",
+      "environment": "grassy dirt terrain",
+      "visual_info": "health bar: full\nfood bar: full\nhotbar: empty\nenvironment: grassy dirt terrain",
+      "goal": "ladder",
+      "video": "videos/v1/Craft_a_ladder/success/3c850_2026_06_18_03_23_14.mp4",
+      "planning": [
+        {
+          "task": "chop trees",
+          "goal": [
+            "logs",
+            2
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft sticks",
+          "goal": [
+            "stick",
+            7
+          ]
+        },
+        {
+          "task": "craft crafting table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "chop tree",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            7
+          ]
+        },
+        {
+          "task": "craft ladder",
+          "goal": [
+            "ladder",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 2064,
+      "saved_at": "2026-06-18T03:23:28Z"
+    },
+    {
+      "id": "ZY5vp7xPxLA4dvdMe5Tei4",
+      "environment": "forest",
+      "visual_info": "health bar: full  \nfood bar: full  \nhotbar: empty  \nenvironment: forest",
+      "goal": "Sticks",
+      "video": "videos/v1/Craft_a_ladder/success/6c769_2026_06_18_03_26_56.mp4",
+      "planning": [
+        {
+          "task": "chop trees",
+          "goal": [
+            "logs",
+            2
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft sticks",
+          "goal": [
+            "stick",
+            7
+          ]
+        },
+        {
+          "task": "craft crafting table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "chop tree",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "chop tree",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft sticks",
+          "goal": [
+            "sticks",
+            4
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            7
+          ]
+        },
+        {
+          "task": "chop tree",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft ladder",
+          "goal": [
+            "ladder",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 3116,
+      "saved_at": "2026-06-18T03:27:11Z"
+    }
+  ]
+}

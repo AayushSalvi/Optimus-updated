@@ -1,0 +1,1166 @@
+{
+  "blaze": {
+    "display_name": "Blaze",
+    "drops": [
+      {
+        "item": "blaze_rod",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "cat": {
+    "display_name": "Cat",
+    "drops": [
+      {
+        "item": "string",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "cave_spider": {
+    "display_name": "Cave Spider",
+    "drops": [
+      {
+        "item": "string",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "spider_eye",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "chicken": {
+    "display_name": "Chicken",
+    "drops": [
+      {
+        "item": "feather",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "chicken",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "cod": {
+    "display_name": "Cod",
+    "drops": [
+      {
+        "item": "cod",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "bone_meal",
+        "drop_chance": 0.05,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "cow": {
+    "display_name": "Cow",
+    "drops": [
+      {
+        "item": "leather",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "beef",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "creeper": {
+    "display_name": "Creeper",
+    "drops": [
+      {
+        "item": "gunpowder",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "dolphin": {
+    "display_name": "Dolphin",
+    "drops": [
+      {
+        "item": "cod",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "donkey": {
+    "display_name": "Donkey",
+    "drops": [
+      {
+        "item": "leather",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "drowned": {
+    "display_name": "Drowned",
+    "drops": [
+      {
+        "item": "rotten_flesh",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "gold_ingot",
+        "drop_chance": 0.05,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "elder_guardian": {
+    "display_name": "Elder Guardian",
+    "drops": [
+      {
+        "item": "prismarine_shard",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "cod",
+        "drop_chance": 0.6,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "prismarine_crystals",
+        "drop_chance": 0.4,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "wet_sponge",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "enderman": {
+    "display_name": "Enderman",
+    "drops": [
+      {
+        "item": "ender_pearl",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "evoker": {
+    "display_name": "Evoker",
+    "drops": [
+      {
+        "item": "totem_of_undying",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "emerald",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "ghast": {
+    "display_name": "Ghast",
+    "drops": [
+      {
+        "item": "ghast_tear",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "gunpowder",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "guardian": {
+    "display_name": "Guardian",
+    "drops": [
+      {
+        "item": "prismarine_shard",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "cod",
+        "drop_chance": 0.5,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "prismarine_crystals",
+        "drop_chance": 0.5,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "hoglin": {
+    "display_name": "Hoglin",
+    "drops": [
+      {
+        "item": "porkchop",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "leather",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "UNKNOWN",
+    "hostile": false
+  },
+  "horse": {
+    "display_name": "Horse",
+    "drops": [
+      {
+        "item": "leather",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "husk": {
+    "display_name": "Husk",
+    "drops": [
+      {
+        "item": "rotten_flesh",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "iron_ingot",
+        "drop_chance": 0.008333333333333333,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "carrot",
+        "drop_chance": 0.008333333333333333,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "potato",
+        "drop_chance": 0.008333333333333333,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "iron_golem": {
+    "display_name": "Iron Golem",
+    "drops": [
+      {
+        "item": "poppy",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "iron_ingot",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "llama": {
+    "display_name": "Llama",
+    "drops": [
+      {
+        "item": "leather",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "magma_cube": {
+    "display_name": "Magma Cube",
+    "drops": [
+      {
+        "item": "magma_cream",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "mooshroom": {
+    "display_name": "Mooshroom",
+    "drops": [
+      {
+        "item": "leather",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "beef",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "mule": {
+    "display_name": "Mule",
+    "drops": [
+      {
+        "item": "leather",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "panda": {
+    "display_name": "Panda",
+    "drops": [
+      {
+        "item": "bamboo",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "parrot": {
+    "display_name": "Parrot",
+    "drops": [
+      {
+        "item": "feather",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "phantom": {
+    "display_name": "Phantom",
+    "drops": [
+      {
+        "item": "phantom_membrane",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "pig": {
+    "display_name": "Pig",
+    "drops": [
+      {
+        "item": "porkchop",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "polar_bear": {
+    "display_name": "Polar Bear",
+    "drops": [
+      {
+        "item": "cod",
+        "drop_chance": 0.75,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "salmon",
+        "drop_chance": 0.25,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "pufferfish": {
+    "display_name": "Pufferfish",
+    "drops": [
+      {
+        "item": "pufferfish",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "bone_meal",
+        "drop_chance": 0.05,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "rabbit": {
+    "display_name": "Rabbit",
+    "drops": [
+      {
+        "item": "rabbit_hide",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "rabbit",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "rabbit_foot",
+        "drop_chance": 0.1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "ravager": {
+    "display_name": "Ravager",
+    "drops": [
+      {
+        "item": "saddle",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "salmon": {
+    "display_name": "Salmon",
+    "drops": [
+      {
+        "item": "salmon",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "bone_meal",
+        "drop_chance": 0.05,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "sheep": {
+    "display_name": "Sheep",
+    "drops": [
+      {
+        "item": "mutton",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "white_wool",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          3
+        ],
+        "note": "From shearing, not killing"
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "shulker": {
+    "display_name": "Shulker",
+    "drops": [
+      {
+        "item": "shulker_shell",
+        "drop_chance": 0.5,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "skeleton": {
+    "display_name": "Skeleton",
+    "drops": [
+      {
+        "item": "arrow",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "bone",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "skeleton_horse": {
+    "display_name": "Skeleton Horse",
+    "drops": [
+      {
+        "item": "bone",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "slime": {
+    "display_name": "Slime",
+    "drops": [
+      {
+        "item": "slime_ball",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "snow_golem": {
+    "display_name": "Snow Golem",
+    "drops": [
+      {
+        "item": "snowball",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "spider": {
+    "display_name": "Spider",
+    "drops": [
+      {
+        "item": "string",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "spider_eye",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "squid": {
+    "display_name": "Squid",
+    "drops": [
+      {
+        "item": "ink_sac",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "stray": {
+    "display_name": "Stray",
+    "drops": [
+      {
+        "item": "arrow",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "bone",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "tipped_arrow",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "strider": {
+    "display_name": "Strider",
+    "drops": [
+      {
+        "item": "string",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "UNKNOWN",
+    "hostile": false
+  },
+  "trader_llama": {
+    "display_name": "Trader Llama",
+    "drops": [
+      {
+        "item": "leather",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "tropical_fish": {
+    "display_name": "Tropical Fish",
+    "drops": [
+      {
+        "item": "tropical_fish",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "bone_meal",
+        "drop_chance": 0.05,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "turtle": {
+    "display_name": "Turtle",
+    "drops": [
+      {
+        "item": "seagrass",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "bowl",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "vindicator": {
+    "display_name": "Vindicator",
+    "drops": [
+      {
+        "item": "emerald",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "witch": {
+    "display_name": "Witch",
+    "drops": [
+      {
+        "item": "glowstone_dust",
+        "drop_chance": 0.125,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "sugar",
+        "drop_chance": 0.125,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "redstone",
+        "drop_chance": 0.125,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "spider_eye",
+        "drop_chance": 0.125,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "glass_bottle",
+        "drop_chance": 0.125,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "gunpowder",
+        "drop_chance": 0.125,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "stick",
+        "drop_chance": 0.25,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "wither_skeleton": {
+    "display_name": "Wither Skeleton",
+    "drops": [
+      {
+        "item": "coal",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "bone",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "wither_skeleton_skull",
+        "drop_chance": 0.025,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "zoglin": {
+    "display_name": "Zoglin",
+    "drops": [
+      {
+        "item": "rotten_flesh",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "UNKNOWN",
+    "hostile": false
+  },
+  "zombie": {
+    "display_name": "Zombie",
+    "drops": [
+      {
+        "item": "rotten_flesh",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "iron_ingot",
+        "drop_chance": 0.008333333333333333,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "carrot",
+        "drop_chance": 0.008333333333333333,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "potato",
+        "drop_chance": 0.008333333333333333,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "zombie_horse": {
+    "display_name": "Zombie Horse",
+    "drops": [
+      {
+        "item": "rotten_flesh",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Passive mobs",
+    "hostile": false
+  },
+  "zombie_villager": {
+    "display_name": "Zombie Villager",
+    "drops": [
+      {
+        "item": "rotten_flesh",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "iron_ingot",
+        "drop_chance": 0.008333333333333333,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "carrot",
+        "drop_chance": 0.008333333333333333,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "potato",
+        "drop_chance": 0.008333333333333333,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "Hostile mobs",
+    "hostile": true
+  },
+  "zombified_piglin": {
+    "display_name": "Zombified Piglin",
+    "drops": [
+      {
+        "item": "rotten_flesh",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "gold_nugget",
+        "drop_chance": 1,
+        "stack_range": [
+          1,
+          1
+        ]
+      },
+      {
+        "item": "gold_ingot",
+        "drop_chance": 0.025,
+        "stack_range": [
+          1,
+          1
+        ]
+      }
+    ],
+    "category": "UNKNOWN",
+    "hostile": false
+  }
+}

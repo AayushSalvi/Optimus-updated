@@ -180,7 +180,7 @@ class CustomEnvWrapper(gym.Wrapper):
         self.cache["ypos"][ypos] += 1
         if self.cache["ypos"][ypos] > 8000:
             self.logger.critical("Stuck....")
-            self.env.execute_cmd("/kill")
+            pass  # [KILL-FIX] disabled: re-entrant execute_cmd crashes env (same class as /setblock bug); /kill would also drop preload inventory
             self.cache["ypos"] = {}
             self.cache["explore"] = 100
 
@@ -203,7 +203,7 @@ class CustomEnvWrapper(gym.Wrapper):
             and self._current_task_finish is False
         ):
             self.logger.critical("Return to ground....")
-            self.env.execute_cmd("/kill")
+            pass  # [KILL-FIX] disabled: re-entrant execute_cmd crashes env (same class as /setblock bug); /kill would also drop preload inventory
             self.cache["ypos"] = {}
             self.cache["explore"] = 100
 

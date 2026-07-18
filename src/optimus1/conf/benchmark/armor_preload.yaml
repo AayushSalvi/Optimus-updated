@@ -1,81 +1,30 @@
 # @package _global_
 defaults:
-- _self_
+  - _self_
 env:
   name: ArmorTaskEnv-v0
-  max_minutes: 15
+  max_minutes: 25
   initial_inventory:
-  - type: oak_log
-    quantity: 12
-    slot: 0
-  - type: iron_ingot
-    quantity: 32
-    slot: 1
-  - type: diamond
-    quantity: 32
-    slot: 2
-  - type: gold_ingot
-    quantity: 32
-    slot: 3
-  - type: crafting_table
-    quantity: 1
-    slot: 4
-  - type: furnace
-    quantity: 1
-    slot: 5
-  - type: oak_planks
-    quantity: 32
-    slot: 13
-  - type: stick
-    quantity: 16
-    slot: 14
-  - type: wooden_pickaxe
-    quantity: 1
-    slot: 15
-  - type: stone_pickaxe
-    quantity: 1
-    slot: 16
+    - {type: "oak_log",     quantity: 12, slot: 0}
+    - {type: "cobblestone", quantity: 16, slot: 1}
+    - {type: "iron_ingot",  quantity: 32, slot: 2}
+    - {type: "diamond",     quantity: 32, slot: 3}
+    - {type: "gold_ingot",  quantity: 32, slot: 4}
+    - {type: "coal",        quantity: 8,  slot: 5}
   times: 1
   prefer_biome: plains
-evaluate:
-- 0
+evaluate: [0]
 all_task:
-- id: 0
-  type: craft
-  instruction: Craft shield
-- id: 1
-  type: craft
-  instruction: Craft iron chestplate
-- id: 2
-  type: craft
-  instruction: Craft iron boots
-- id: 3
-  type: craft
-  instruction: Craft iron leggings
-- id: 4
-  type: craft
-  instruction: Craft iron helmet
-- id: 5
-  type: craft
-  instruction: Craft diamond helmet
-- id: 6
-  type: craft
-  instruction: Craft diamond chestplate
-- id: 7
-  type: craft
-  instruction: Craft diamond leggings
-- id: 8
-  type: craft
-  instruction: Craft diamond boots
-- id: 9
-  type: craft
-  instruction: Craft golden helmet
-- id: 10
-  type: craft
-  instruction: Craft golden leggings
-- id: 11
-  type: craft
-  instruction: Craft golden boots
-- id: 12
-  type: craft
-  instruction: Craft golden chestplate
+  - {id: 0, type: craft, instruction: Craft shield}
+  - {id: 1, type: craft, instruction: Craft iron chestplate}
+  - {id: 2, type: craft, instruction: Craft iron boots}
+  - {id: 3, type: craft, instruction: Craft iron leggings}
+  - {id: 4, type: craft, instruction: Craft iron helmet}
+  - {id: 5, type: craft, instruction: Craft diamond helmet}
+  - {id: 6, type: craft, instruction: Craft diamond chestplate}
+  - {id: 7, type: craft, instruction: Craft diamond leggings}
+  - {id: 8, type: craft, instruction: Craft diamond boots}
+  - {id: 9, type: craft, instruction: Craft golden helmet}
+  - {id: 10, type: craft, instruction: Craft golden leggings}
+  - {id: 11, type: craft, instruction: Craft golden boots}
+  - {id: 12, type: craft, instruction: Craft golden chestplate}

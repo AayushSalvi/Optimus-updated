@@ -456,7 +456,7 @@ class CraftHelper:
         _before = -1  # [BUG1 FIX] guard against UnboundLocalError when else-branch is taken
         if _moved_item is not None:
             _placed = False
-            for _try in range(10):
+            for _try in range(2):
                 _before = self._inv_count(_moved_item)
                 self.move_to_slot(SLOT_POS, item_from)
                 self._null_action(1)

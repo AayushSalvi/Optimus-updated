@@ -121,7 +121,19 @@ def agent_do(
         from optimus1.stagnation_guard import StagnationGuard
         stagnation = StagnationGuard()
 
+        _replan_count = 0
+        _REPLAN_CAP = 6
+        _craft_step_total = 0
+        _CRAFT_STEP_CAP = 14000
         while current_plan is not None:
+            # [REPLAN-CAP] Bound the replan loop. A helper that false-reports a
+            # missing material (e.g. an equipped/placed crafting_table the
+            # label-reader can't see) otherwise triggers unbounded
+            # replan -> re-gather -> re-craft cycles until budget death.
+            if _replan_count > _REPLAN_CAP:
+                logger.warning(f"[red][REPLAN-CAP] exceeded {_REPLAN_CAP} replans; ending episode as failed[/red]")
+                status = "failed"
+                break
             # [LEDGER] snapshot inventory + position before this sub-task
             _ledger_pre_inv = dict(env.status_mod.inventory) if (ledger is not None and hasattr(env, "status_mod")) else {}
             _ledger_pre_loc = dict(env.status_mod.location_stats) if (ledger is not None and hasattr(env, "status_mod")) else {}
@@ -153,15 +165,36 @@ def agent_do(
                 except RuntimeError as _craft_err:
                     # [CRAFT-CRASH WRAPPER] env terminated mid-craft (budget overflow
                     # or env death). Mark sub-task failed; do NOT crash the whole sweep.
-                    logger.warning(f"[red]helper.step crashed: {_craft_err}; treating as failed sub-task[/red]")
-                    done, info = True, {"craft_crash": str(_craft_err)}
+                    _errs = str(_craft_err)
+                    # Dead-env errors are terminal: the episode is over, retrying just
+                    # spins on a corpse. Re-raise so the outer loop ends the run cleanly.
+                    if "done=True" in _errs or "bytes-like object" in _errs:
+                        logger.warning(f"[red]helper.step: env is dead ({_errs}); terminating episode[/red]")
+                        raise
+                    # Otherwise a recoverable craft miss: mark failed, let loop replan.
+                    logger.warning(f"[red]helper.step crashed: {_errs}; treating as failed sub-task[/red]")
+                    done, info = False, f"craft_crash: {_errs}"
                 steps = helper.get_task_steps(task)
 
                 env.can_open_inventory = False
                 env.can_change_hotbar = False
 
                 monitors.update(f"{task}_{progress}", done, steps)
+                if not done:
+                    # [CRAFT-STEP-CAP] Bound a single sub-task by STEP count, not
+                    # attempt count. Multi-cell crafts (furnace=8 cobblestone) can
+                    # legitimately need thousands of steps and many internal retries
+                    # before landing (measured: successful furnace ~7.5k steps). An
+                    # attempt-count cap killed these prematurely. Only bail when a
+                    # single sub-task exceeds the step ceiling (truly stuck).
+                    _craft_step_total += steps
+                    logger.warning(f"[red][CRAFT-STEP-CAP] {task} failed; sub-task steps={_craft_step_total}/{_CRAFT_STEP_CAP}[/red]")
+                    if _craft_step_total > _CRAFT_STEP_CAP:
+                        logger.warning(f"[red][CRAFT-STEP-CAP] exceeded on {task}; ending episode as failed[/red]")
+                        status = "failed"
+                        break
                 if done:
+                    _craft_step_total = 0
                     logger.info(f"[green]{task} Success[/green]!")
                     progress += 1
                     pbar.update(all_task, advance=1)
@@ -236,6 +269,7 @@ def agent_do(
                     new_planning = render_gpt4_plan(replan, is_replan=True)
                     if new_planning[-1]["task"] != task:
                         new_planning.append(current_plan)
+                    _replan_count += 1
                     plan_manager.insert_plan(new_planning, is_replan=True)
 
                     set_pbar_total(pbar, all_task, len(plan_manager.all))
@@ -523,6 +557,27 @@ def main(cfg: DictConfig):
                             _pruned.append(_step)
                         else:
                             logger.info(f"[PLAN-PRUNE] dropped {_step.get('task','?')!r} (have {_inv.get(_g_item,0)} {_g_item} >= {_g_count})")
+                    # [PRUNE-CASCADE] Drop orphaned mine-ore steps whose only
+                    # consumer (the smelt step) was pruned above. Ores feed smelts
+                    # exclusively in these chains; if no surviving step outputs the
+                    # corresponding ingot, the mine step is dead weight and would
+                    # strand the agent on an impossible gather (spatial blindness).
+                    _SMELT_OF = {"iron_ore": "iron_ingot", "gold_ore": "gold_ingot"}
+                    _survive_items = set()
+                    for _s in _pruned:
+                        _sg = _s.get("goal", [None, 0])
+                        if _sg and _sg[0]:
+                            _survive_items.add(_sg[0])
+                    _cascaded = []
+                    for _i2, _s in enumerate(_pruned):
+                        _sg = _s.get("goal", [None, 0])
+                        _item = _sg[0] if _sg else None
+                        _is_last2 = (_i2 == len(_pruned) - 1)
+                        if (not _is_last2) and _item in _SMELT_OF and _SMELT_OF[_item] not in _survive_items:
+                            logger.info(f"[PRUNE-CASCADE] dropped orphaned {_s.get('task','?')!r} (consumer smelt of {_SMELT_OF[_item]} already pruned)")
+                        else:
+                            _cascaded.append(_s)
+                    _pruned = _cascaded
                     if len(_pruned) < _orig:
                         logger.info(f"[PLAN-PRUNE] {_orig} -> {len(_pruned)} steps")
                     planning = _pruned
@@ -532,10 +587,17 @@ def main(cfg: DictConfig):
             # return
 
             current_monitos = Monitors([SuccessMonitor(), StepMonitor()])
-            # try:
-            status, steps, current_planning = agent_do(
-                cfg, env, logger, current_monitos, planning, obs, memory_bank, ledger=ledger
-            )
+            try:
+                status, steps, current_planning = agent_do(
+                    cfg, env, logger, current_monitos, planning, obs, memory_bank, ledger=ledger
+                )
+            except RuntimeError as _dead_err:
+                if "done=True" not in str(_dead_err):
+                    raise
+                logger.warning(f"[red][DEAD-ENV] episode over mid-helper: {_dead_err}; marking run failed[/red]")
+                status = "failed"
+                steps = cfg.env.max_minutes * 60 * 20
+                current_planning = planning
             video_file = env.save_video(task, status)
 
             # [AMEP] Capture failure metadata when status == "failed"

@@ -127,3 +127,6 @@ plan/
 *.docx
 agentic_skill_templates.json
 95e5309 (Remove plan/ and reflection/ from tracking)
+
+# Graphify knowledge-graph output (regenerable, local analysis artifact)
+graphify-out/

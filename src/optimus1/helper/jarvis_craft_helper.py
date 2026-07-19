@@ -214,6 +214,28 @@ class CraftHelper:
             if inventory_id:
                 break
             self._null_action(2)
+        # [EQUIP-RECOVER] After a failed craft the table can be left in the
+        # held/selected slot, which neither reader sees (labels cover only the
+        # 36 bag slots + 9 grid slots). The status mod tracks the held item
+        # from hotbar presses and the wrapper merges it into info; if it says
+        # we hold the table, try placing it directly and verify by the GUI
+        # opening. Falls through to the assert unchanged if it does not open.
+        if not inventory_id and "crafting_table" in str(self.info.get("equipment", "")):
+            if self.info["isGuiOpen"]:
+                self._call_func("inventory")
+            self.current_gui_type = None
+            self.crafting_slotpos = "none"
+            self._place_down()
+            for _ in range(5):
+                self._call_func("use")
+                if self.info["isGuiOpen"]:
+                    break
+            if self.info["isGuiOpen"]:
+                self.has_crafting_table = True
+                self.cursor = [WIDTH // 2, HEIGHT // 2]
+                self.current_gui_type = "crating_table_wo_recipe"
+                self.crafting_slotpos = SLOT_POS_TABLE_WO_RECIPE
+                return
         self._assert(inventory_id, MISSING_MATERIAL_FORMAT.format("crafting_table", 1))
         self.has_crafting_table = True
         _invenotry_id = int(inventory_id.split("_")[-1])
@@ -795,6 +817,14 @@ class CraftHelper:
         Returns the slot key (e.g. 'inventory_0') or None.
         """
         if item_type == "item":
+            # [EXACT-MATCH] Prefer exact type equality; the substring regex is
+            # kept only as a fallback. re.search("stone", str(value)) matches a
+            # slot holding "cobblestone" or "stone_pickaxe" and returns the
+            # wrong slot — same collision class the ALIASES exact-match fix
+            # closed in main.py's _expand_item.
+            for key, value in labels.items():
+                if isinstance(value, dict) and value.get("type") == item:
+                    return key
             for key, value in labels.items():
                 if re.search(item, str(value)):
                     return key

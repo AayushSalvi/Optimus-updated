@@ -527,12 +527,36 @@ class CraftHelper:
             self._null_action(1)
         self.random_move_or_stay()
 
+    # [CURSOR-CLEAR] Deposit any stray cursor stack into an empty bag slot.
+    # Evidence (diamond_1 recheck log): the FIRST pickup of a craft can no-op
+    # deterministically (stick -> resource_4, delta=0 on 31/31 attempts across
+    # three sub-task instances), consistent with the cursor arriving occupied
+    # from the previous craft's result collection or session. A select-click
+    # on an occupied source slot with a foreign stack on the cursor does not
+    # pick the item up. Clicking an EMPTY slot is a no-op when the cursor is
+    # clean and deposits the stack when it is not - safe in both cases.
+    def _clear_cursor(self, SLOT_POS: Dict, labels: Dict) -> None:
+        import sys
+        try:
+            _bag = {k: v for k, v in labels.items() if not k.startswith("resource_")}
+            _empty = self.find_in_inventory(_bag, "none")
+            if _empty:
+                print(f"[CURSOR-CLEAR] depositing any cursor stack at {_empty}", file=sys.stderr, flush=True)
+                self.move_to_slot(SLOT_POS, _empty)
+                self._null_action(1)
+                self._select_item()
+                self._null_action(1)
+        except Exception as _e:
+            print(f"[CURSOR-CLEAR] skipped: {_e}", file=sys.stderr, flush=True)
+
     # select item_to
     def pull_item_return(
         self,
         SLOT_POS: Dict,
         item_to: str,
     ) -> None:
+        import sys
+        print(f"[CURSOR-RETURN] depositing remainder back at {item_to}", file=sys.stderr, flush=True)
         self.move_to_slot(SLOT_POS, item_to)
         self._null_action(1)
         self._select_item()
@@ -543,6 +567,8 @@ class CraftHelper:
     def pull_item_result(
         self, SLOT_POS: Dict, item_from: str, item_to: str, target_number: int
     ) -> None:
+        import sys
+        print(f"[CURSOR-RESULT] collecting from {item_from} -> {item_to} n={target_number}", file=sys.stderr, flush=True)
         self.move_to_slot(SLOT_POS, item_from)
         for i in range(target_number):
             self._use_item()
@@ -926,6 +952,9 @@ class CraftHelper:
     def crafting_shaped(self, target: str, iter_num: int, recipe_info: Dict):
         slot_pos = self.crafting_slotpos
         labels = self.get_labels()
+        # [CURSOR-CLEAR] see _clear_cursor: the first pickup of a craft no-ops
+        # if a stray stack is riding the cursor from the previous session.
+        self._clear_cursor(slot_pos, labels)
         pattern = recipe_info.get("pattern")
         items = recipe_info.get("key")
         # [BUG 2 FIX] Place item-typed ingredients (sticks, ingots) before
@@ -1005,6 +1034,9 @@ class CraftHelper:
     def crafting_shapeless(self, target: str, iter_num: int, recipe_info: Dict):
         slot_pos = self.crafting_slotpos
         labels = self.get_labels()
+        # [CURSOR-CLEAR] see _clear_cursor: the first pickup of a craft no-ops
+        # if a stray stack is riding the cursor from the previous session.
+        self._clear_cursor(slot_pos, labels)
         ingredients = recipe_info.get("ingredients")
         random.shuffle(ingredients)
         items = dict()
